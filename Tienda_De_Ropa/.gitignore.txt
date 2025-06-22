@@ -1,0 +1,35 @@
+# Visual Studio / .NET
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+bin/
+obj/
+*.dll
+*.exe
+*.pdb
+*.nupkg
+packages/
+*.psess
+*.vsp
+*.vspx
+*.mdf
+*.ldf
+
+# Local environments
+appsettings.*.json
+wwwroot/lib/
+
+# Logs / temporales
+*.log
+*.temp
+logs/
+
+# IDE configs
+.idea/
+.vscode/
+
+# OS artifacts
+.DS_Store
+Thumbs.db
