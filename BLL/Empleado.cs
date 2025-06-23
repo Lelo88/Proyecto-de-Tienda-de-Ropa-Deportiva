@@ -1,95 +1,100 @@
-﻿using DAL;
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.Data;
-using System.Linq;
-using System.Runtime.InteropServices;
-using System.Text;
-using System.Threading.Tasks;
+using DAL;
+using Entidad;
 
 namespace BLL
 {
-    public abstract class Empleado
+    public class EmpleadoBLL
     {
-        
+        private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
 
-        private int id_empleado;
+        public bool IniciarSesion(string usuario, string contrasena, out string tipoEmpleado)
+        {
+            tipoEmpleado = string.Empty;
 
-		public int Id_Empleado
-		{
-			get { return id_empleado; }
-			set { id_empleado = value; }
-		}
-		private string nombre;
+            try
+            {
+                DataTable dt = empleadoDAL.Iniciar_Sesion();
 
-		public string Nombre
-		{
-			get { return nombre; }
-			set { nombre = value; }
-		}
-		private string apellido;
+                foreach (DataRow row in dt.Rows)
+                {
+                    string usuarioDb = row["USUARIO"].ToString();
+                    string contrasenaDb = row["CONTRASEÑA"].ToString();
+                    string descripcion = row["descripcion"].ToString();
 
-		public string Apellido
-		{
-			get { return apellido; }
-			set { apellido = value; }
-		}
-		private string dni;
+                    if (usuarioDb.Equals(usuario, StringComparison.OrdinalIgnoreCase) &&
+                        contrasenaDb.Equals(contrasena))
+                    {
+                        tipoEmpleado = descripcion;
+                        return true;
+                    }
+                }
 
-		public string Dni
-		{
-			get { return dni; }
-			set { dni = value; }
-		}
-
-		private Tipo_empleado tipo_Empleado;
-
-		public Tipo_empleado Tipo_Empleado
-		{
-			get { return tipo_Empleado; }
-			set { tipo_Empleado = value; }
-		}
-
-
-		private string usuario;
-
-		public string Usuario
-		{
-			get { return usuario; }
-			set { usuario = value; }
-		}
-		private string contrasenia;
-
-		public string Contrasenia
-		{
-			get { return contrasenia; }
-			set { contrasenia = value; }
-		}
-		public Empleado() {
-            
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al iniciar sesión: " + ex.Message);
+                return false;
+            }
         }
 
-		public Empleado(int id_empleado, 
-			string nombre, 
-			string apellido, 
-			string dni, 
-			Tipo_empleado tipo_empleado, 
-			string usuario, 
-			string contrasenia) {
-			
-			this.id_empleado=id_empleado;
-			this.nombre=nombre;
-			this.apellido=apellido;
-			this.dni=dni;
-			this.Tipo_Empleado=tipo_empleado ;
-			this.usuario=usuario;
-			this.contrasenia=contrasenia;
-		}
+        public DataTable ObtenerTiposDeEmpleado()
+        {
+            return empleadoDAL.ObtenerTiposDeEmpleado();
+        }
 
-		public virtual bool Iniciar_Sesion(string usuario, string contrasenia)
-		{
-            return true;
-		}
+        public DataTable ListarEmpleados()
+        {
+            return empleadoDAL.ListarEmpleados();
+        }
 
-	}
+        public bool AgregarEmpleado(Tipo_Empleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(usuario))
+                    throw new ArgumentException("Nombre y usuario no pueden estar vacíos.");
+
+                int idTipoEmpleado = tipo.Id_TipoEmpleado;
+                int resultado = empleadoDAL.AgregarEmpleado(idTipoEmpleado, nombre, apellido, dni, usuario, contrasena);
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al agregar empleado: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool ModificarEmpleado(int idEmpleado, Tipo_Empleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
+        {
+            try
+            {
+                int idTipoEmpleado = tipo.Id_TipoEmpleado;
+                int resultado = empleadoDAL.ModificarEmpleado(idEmpleado, idTipoEmpleado, nombre, apellido, dni, usuario, contrasena);
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al modificar empleado: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool EliminarEmpleado(int idEmpleado)
+        {
+            try
+            {
+                int resultado = empleadoDAL.EliminarEmpleado(idEmpleado);
+                return resultado > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al eliminar empleado: " + ex.Message);
+                return false;
+            }
+        }
+    }
 }

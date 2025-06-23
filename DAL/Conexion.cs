@@ -1,291 +1,88 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-
-//Incorporo el espacio de nombre System.Data.SqlClient
-using System.Data.SqlClient;
+using System.Configuration;
 using System.Data;
+using System.Data.SqlClient;
 
 namespace DAL
 {
-    public class Conexion
+    public class Conexion : InterfaceConexion
     {
-        private SqlConnection objConexion;
-        private string strCadenaDeConexion = "";
+        private SqlConnection _conexion;
+        private string _cadenaConexion;
 
+        public Conexion()
+        {
+            _cadenaConexion = ConfigurationManager.ConnectionStrings["MiConexion"].ConnectionString;
+        }
 
-        /* -------------------- private void Conectar() ------------ 
-         * Este metodo como indica su nombre... me permite conectarme con la 
-         * base de datos (en este caso, SqlServer)
-         * 
-         */
         private void Conectar()
-        {   // HACK: Cadena de conexión hardcodeada. Luego ponerla como parametro de configuración del proyecto u otra alternativa.
-            strCadenaDeConexion= "Data Source=DARIO\\SQLEXPRESS;Initial Catalog=TiendaRBR;Integrated Security=True";
+        {
+            _conexion = new SqlConnection(_cadenaConexion);
+            _conexion.Open();
+        }
 
-            //Instanció un objeto del tipo SqlConnection
-            objConexion = new SqlConnection();
-            objConexion.ConnectionString = strCadenaDeConexion;
-            objConexion.Open();
-        } 
-
-        /* -------------------- private void Desconectar() ------------ 
-         * Este metodo como indica su nombre... me permite desconectarme de la
-         * base de datos (en este caso, SqlServer)
-         * 
-         */
         private void Desconectar()
         {
-            objConexion.Close();
-            objConexion.Dispose();
+            if (_conexion != null && _conexion.State == ConnectionState.Open)
+            {
+                _conexion.Close();
+                _conexion.Dispose();
+            }
         }
 
-        public DataTable LeerPorStoreProcedure(string pNombreStoreProcedure, SqlParameter[] pParametrosSql = null)
+        public DataTable LeerPorComando(string query, SqlParameter[] parametros = null)
         {
-            //Instancio un objeto del tipo DataTable
-            var unaTabla = new DataTable();
-
-            //Instancio un objeto del tipo SqlCommand
-            var objComando = new SqlCommand();
-
-            //Me conecto...
-            this.Conectar();
-
+            DataTable tabla = new DataTable();
+            SqlCommand comando = new SqlCommand(query);
 
             try
             {
-                objComando.CommandText = pNombreStoreProcedure;
-                objComando.CommandType = CommandType.StoredProcedure;
-                objComando.Connection = this.objConexion;
+                Conectar();
+                comando.Connection = _conexion;
+                comando.CommandType = CommandType.Text;
+                if (parametros != null)
+                    comando.Parameters.AddRange(parametros);
 
-                if (pParametrosSql != null)
-                {
-                    //Lleno los SqlParameters a la lista de parametros
-                    objComando.Parameters.AddRange(pParametrosSql);
-                }
-
-                //Instancio un adaptador con el parametro SqlCommand
-                var objAdaptador = new SqlDataAdapter(objComando);
-
-                //Lleno la tabla, el objeto unaTabla con el adaptador
-                objAdaptador.Fill(unaTabla);
-            }
-            catch (Exception)
-            {
-                //Como hay error... por el motivo que sea asigno el resultado a null
-                unaTabla = null;
-
-                throw;
+                SqlDataAdapter adaptador = new SqlDataAdapter(comando);
+                adaptador.Fill(tabla);
             }
             finally
             {
-
-                //Pase lo que pase me desconecto
-                this.Desconectar();
+                Desconectar();
             }
 
-
-            return unaTabla;
+            return tabla;
         }
 
-        public DataTable LeerPorComando(string pComando)
+        public int EscribirPorComando(string query, SqlParameter[] parametros = null)
         {
-            //Instancio un objeto del tipo DataTable
-            var unaTabla = new DataTable();
-
-            //Instancio un objeto del tipo SqlCommand
-            var objComando = new SqlCommand();
-
-            //Me conecto...
-            this.Conectar();
-
-            try
-            {
-
-
-                //Parametrizo el objeto SqlCommand con sus valores respectivos
-                objComando.CommandType = CommandType.Text;
-                objComando.Connection = this.objConexion;
-                objComando.CommandText = pComando;
-
-                //Instancio un adaptador con el parametro SqlCommand
-                var objAdaptador = new SqlDataAdapter(objComando);
-
-                //Lleno la tabla, el objeto unaTabla con el adaptador
-                objAdaptador.Fill(unaTabla);
-
-            }
-            catch
-            {
-                //Como hay error... por el motivo que sea asigno el resultado a null
-                unaTabla = null;
-
-                throw;
-            }
-            finally
-            {
-                //Siempre, por más que salga bien o mal el llenado, me desconecto
-                this.Desconectar();
-            }
-
-            return unaTabla;
-        }
-
-        public int EscribirPorComando(string pTexto)
-        {
-            //Instanció una variable filasAfectadas que va a terminar devolviendo la cantidad de filas afectadas.
+            SqlCommand comando = new SqlCommand(query);
             int filasAfectadas = 0;
 
-            //Instancio un objeto del tipo SqlCommand
-            var objComando = new SqlCommand();
-
-            //Me conecto...
-            this.Conectar();
-
             try
             {
-                objComando.CommandText = pTexto;
-                objComando.CommandType = CommandType.Text;
-                objComando.Connection = this.objConexion;
+                Conectar();
+                comando.Connection = _conexion;
+                comando.CommandType = CommandType.Text;
+                if (parametros != null)
+                    comando.Parameters.AddRange(parametros);
 
-                //El método ExecuteNonQuery() me devuelve la cantidad de filas afectadas.
-                filasAfectadas = objComando.ExecuteNonQuery();
-
-
-            }
-            catch (Exception)
-            {
-                filasAfectadas = -1;
-                throw;
+                filasAfectadas = comando.ExecuteNonQuery();
             }
             finally
             {
-                //Me desconecto
-                this.Desconectar();
+                Desconectar();
             }
-
 
             return filasAfectadas;
         }
 
-
-        public int EscribirPorStoreProcedure(string pTexto, SqlParameter[] pParametrosSql)
+        public SqlParameter CrearParametro(string nombre, object valor, SqlDbType tipo)
         {
-            //Instanció una variable filasAfectadas que va a terminar devolviendo la cantidad de filas afectadas.
-            int filasAfectadas = 0;
-
-            //Instancio un objeto del tipo SqlCommand
-            var objComando = new SqlCommand();
-
-            //Me conecto...
-            this.Conectar();
-
-            try
+            return new SqlParameter(nombre, tipo)
             {
-                objComando.CommandText = pTexto;
-                objComando.CommandType = CommandType.StoredProcedure;
-                objComando.Connection = this.objConexion;
-
-                if (pParametrosSql.Length > 0)
-                {
-                    objComando.Parameters.AddRange(pParametrosSql);
-                    //El método ExecuteNonQuery() me devuelve la cantidad de filas afectadas.
-                    filasAfectadas = objComando.ExecuteNonQuery();
-                }
-                else
-                {
-                    //retorno -1 porque la lista de parametros Sql tiene 0 ítems...
-                    filasAfectadas = -1;
-                }
-
-
-
-            }
-            catch (Exception)
-            {
-                filasAfectadas = -1;
-                throw;
-            }
-            finally
-            {
-                //Me desconecto
-                this.Desconectar();
-            }
-
-
-            return filasAfectadas;
+                Value = valor ?? DBNull.Value
+            };
         }
-
-        #region Parametros
-        public SqlParameter crearParametro(string pNombre, string pValor)
-        {
-
-            SqlParameter objParametro = new SqlParameter();
-
-            objParametro.ParameterName = pNombre;
-            objParametro.Value = pValor;
-            objParametro.DbType = DbType.String;
-
-            return objParametro;
-        }
-
-
-
-        public SqlParameter crearParametro(string pNombre, double pValor)
-        {
-
-            SqlParameter objParametro = new SqlParameter();
-
-            objParametro.ParameterName = pNombre;
-            objParametro.Value = pValor;
-            objParametro.DbType = DbType.Double;
-
-            return objParametro;
-        }
-
-
-        public SqlParameter crearParametro(string pNombre, DateTime pValor)
-        {
-
-            SqlParameter objParametro = new SqlParameter();
-
-            objParametro.ParameterName = pNombre;
-            objParametro.Value = pValor;
-            objParametro.DbType = DbType.DateTime;
-
-            return objParametro;
-        }
-
-
-        public SqlParameter crearParametro(string pNombre, int pValor)
-        {
-
-            SqlParameter objParametro = new SqlParameter();
-
-            objParametro.ParameterName = pNombre;
-            objParametro.Value = pValor;
-            objParametro.DbType = DbType.Int32;
-
-            return objParametro;
-        }
-
-
-        public SqlParameter crearParametro(string pNombre, Boolean pValor)
-        {
-
-            SqlParameter objParametro = new SqlParameter();
-
-            objParametro.ParameterName = pNombre;
-            objParametro.Value = pValor;
-            objParametro.DbType = DbType.Boolean;
-
-            return objParametro;
-        }
-        #endregion
-
-
     }
 }
