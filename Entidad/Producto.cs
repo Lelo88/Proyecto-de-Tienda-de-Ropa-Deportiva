@@ -72,3 +72,13 @@ namespace Entidad
 
         public Producto(int id, string nombre, int cantidad, float precio, Deporte deporte, string marca, string modelo)
         {
+            Id_Producto = id;
+            Nombre = nombre;
+            Cantidad = cantidad;
+            Precio = precio;
+            Deporte = deporte;
+            Marca = marca;
+            Modelo = modelo;
+        }
+    }
+}

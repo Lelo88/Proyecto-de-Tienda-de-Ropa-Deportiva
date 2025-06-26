@@ -50,7 +50,7 @@ namespace BLL
             return empleadoDAL.ListarEmpleados();
         }
 
-        public bool AgregarEmpleado(Tipo_Empleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
+        public bool AgregarEmpleado(TipoEmpleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
         {
             try
             {
@@ -68,7 +68,7 @@ namespace BLL
             }
         }
 
-        public bool ModificarEmpleado(int idEmpleado, Tipo_Empleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
+        public bool ModificarEmpleado(int idEmpleado, TipoEmpleado tipo, string nombre, string apellido, string dni, string usuario, string contrasena)
         {
             try
             {
