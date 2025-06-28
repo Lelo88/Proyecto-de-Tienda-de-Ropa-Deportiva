@@ -1,49 +1,30 @@
-﻿using DAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL;
+using Entidad;
 
 namespace BLL
 {
-    public class Deporte
+    public class DeporteBLL
     {
-        private int id_deporte;
+        private readonly DeporteDAL deporteDAL = new DeporteDAL();
 
-        public int Id_Deporte
+        public List<Deporte> ObtenerDeportes()
         {
-            get { return id_deporte; }
-            set { id_deporte = value; }
-        }
-        
-        private string nombre;
-
-        public string Nombre
-        {
-            get { return nombre; }
-            set { nombre = value; }
+            return deporteDAL.ObtenerTodos();
         }
 
-        public Deporte() { 
-        
-        }
-        public Deporte(int id_deporte, string nombre)
+        public List<string> ObtenerNombresDeDeportes()
         {
-            this.id_deporte = id_deporte;
-            this.nombre = nombre;
-        }
-        public List<string> obtenerDeportes()
-        {
-            DAL.DeporteDAL deporte = new DAL.DeporteDAL();
-            DataTable dt = deporte.ObtenerDeportes();
-            List<string> deportes = new List<string>();
-            foreach (DataRow fila in dt.Rows)
+            List<Deporte> deportes = ObtenerDeportes();
+            List<string> nombres = new List<string>();
+
+            foreach (var d in deportes)
             {
-                deportes.Add(fila["Nombre"].ToString()); 
+                nombres.Add(d.Nombre);
             }
-            return deportes;
+
+            return nombres;
         }
     }
 }

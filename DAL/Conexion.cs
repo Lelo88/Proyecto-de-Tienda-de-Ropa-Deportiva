@@ -84,5 +84,33 @@ namespace DAL
                 Value = valor ?? DBNull.Value
             };
         }
+
+        public object EjecutarScalar(string query, SqlParameter[] parametros = null)
+        {
+            object resultado = null;
+            try
+            {
+                this.Conectar();
+                using (SqlCommand comando = new SqlCommand(query, _conexion))
+                {
+                    if (parametros != null)
+                        comando.Parameters.AddRange(parametros);
+
+                    resultado = comando.ExecuteScalar();
+                }
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+            finally
+            {
+                this.Desconectar();
+            }
+
+            return resultado;
+        }
+
+
     }
 }

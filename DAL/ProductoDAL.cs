@@ -10,7 +10,7 @@ namespace DAL
     {
         private readonly Conexion conexion = new Conexion();
 
-        public List<Producto> ObtenerTodos()
+        public List<Producto> ObtenerTodosLosProductos()
         {
             List<Producto> productos = new List<Producto>();
             try
@@ -20,16 +20,7 @@ namespace DAL
 
                 foreach (DataRow row in dt.Rows)
                 {
-                    productos.Add(new Producto
-                    {
-                        Id_Producto = Convert.ToInt32(row["id_producto"]),
-                        Nombre = row["nombre"].ToString(),
-                        Cantidad = Convert.ToInt32(row["cantidad"]),
-                        Precio = Convert.ToSingle(row["precio"]),
-                        Marca = row["marca"].ToString(),
-                        Modelo = row["modelo"].ToString(),
-                        Deporte = new Deporte { Id_Deporte = Convert.ToInt32(row["id_deporte"]) }
-                    });
+                    productos.Add(MapearProducto(row));
                 }
             }
             catch (Exception ex)
@@ -40,7 +31,7 @@ namespace DAL
             return productos;
         }
 
-        public Producto ObtenerPorNombre(string nombre)
+        public Producto ObtenerProductoPorNombre(string nombre)
         {
             try
             {
@@ -52,22 +43,73 @@ namespace DAL
                 DataTable dt = conexion.LeerPorComando(query, parametros);
                 if (dt.Rows.Count == 0) return null;
 
-                DataRow row = dt.Rows[0];
-                return new Producto
-                {
-                    Id_Producto = Convert.ToInt32(row["id_producto"]),
-                    Nombre = row["nombre"].ToString(),
-                    Cantidad = Convert.ToInt32(row["cantidad"]),
-                    Precio = Convert.ToSingle(row["precio"]),
-                    Marca = row["marca"].ToString(),
-                    Modelo = row["modelo"].ToString(),
-                    Deporte = new Deporte { Id_Deporte = Convert.ToInt32(row["id_deporte"]) }
-                };
+                return MapearProducto(dt.Rows[0]);
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error al obtener producto por nombre: " + ex.Message);
                 return null;
+            }
+        }
+
+        public int ObtenerStock(string nombre)
+        {
+            try
+            {
+                string query = "SELECT cantidad FROM producto WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@nombre", nombre)
+                };
+
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                if (dt.Rows.Count == 0) return 0;
+
+                return Convert.ToInt32(dt.Rows[0]["cantidad"]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener stock: " + ex.Message);
+                return 0;
+            }
+        }
+
+        public float ObtenerPrecio(string nombre)
+        {
+            try
+            {
+                string query = "SELECT precio FROM producto WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@nombre", nombre)
+                };
+
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                if (dt.Rows.Count == 0) return 0;
+
+                return Convert.ToSingle(dt.Rows[0]["precio"]);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener precio: " + ex.Message);
+                return 0;
+            }
+        }
+
+        public bool ActualizarStock(string nombre, int nuevaCantidad)
+        {
+            try
+            {
+                string query = "UPDATE producto SET cantidad = @cantidad WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@cantidad", nuevaCantidad),
+                    new SqlParameter("@nombre", nombre)
+                };
+
+                return conexion.EscribirPorComando(query, parametros) > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al actualizar stock: " + ex.Message);
+                return false;
             }
         }
 
@@ -138,6 +180,20 @@ namespace DAL
                 Console.WriteLine("Error al eliminar producto: " + ex.Message);
                 return false;
             }
+        }
+
+        private Producto MapearProducto(DataRow row)
+        {
+            return new Producto
+            {
+                Id_Producto = Convert.ToInt32(row["id_producto"]),
+                Nombre = row["nombre"].ToString(),
+                Cantidad = Convert.ToInt32(row["cantidad"]),
+                Precio = Convert.ToSingle(row["precio"]),
+                Marca = row["marca"].ToString(),
+                Modelo = row["modelo"].ToString(),
+                Deporte = new Deporte { Id_Deporte = Convert.ToInt32(row["id_deporte"]) }
+            };
         }
     }
 }

@@ -45,5 +45,47 @@ namespace DAL
 
             return todoOk;
         }
+
+        public List<DetalleVenta> ObtenerDetallesPorVenta(int idVenta)
+        {
+            List<DetalleVenta> lista = new List<DetalleVenta>();
+
+            SqlParameter[] parametros = {
+                conexion.CrearParametro("@idVenta", idVenta, SqlDbType.Int)
+            };
+
+            string query = @"
+                SELECT DV.ID_DETALLE, DV.ID_VENTA, DV.CANTIDAD, DV.PRECIO_UNITARIO,
+                       P.ID_PRODUCTO, P.NOMBRE AS NOMBRE_PRODUCTO, P.MARCA, P.MODELO
+                FROM DETALLE_VENTA DV
+                JOIN PRODUCTO P ON DV.ID_PRODUCTO = P.ID_PRODUCTO
+                WHERE DV.ID_VENTA = @idVenta";
+
+            DataTable dt = conexion.LeerPorComando(query, parametros);
+
+            foreach (DataRow row in dt.Rows)
+            {
+                lista.Add(MapearDetalleVenta(row));
+            }
+
+            return lista;
+        }
+
+        private DetalleVenta MapearDetalleVenta(DataRow row)
+        {
+            return new DetalleVenta
+            {
+                Id_Detalle = Convert.ToInt32(row["ID_DETALLE"]),
+                Cantidad = Convert.ToInt32(row["CANTIDAD"]),
+                Precio_Unitario = Convert.ToSingle(row["PRECIO_UNITARIO"]),
+                Producto = new Producto
+                {
+                    Id_Producto = Convert.ToInt32(row["ID_PRODUCTO"]),
+                    Nombre = row["NOMBRE_PRODUCTO"].ToString(),
+                    Marca = row["MARCA"].ToString(),
+                    Modelo = row["MODELO"].ToString()
+                }
+            };
+        }
     }
 }

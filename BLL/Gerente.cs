@@ -1,54 +1,56 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL;
+using Entidad;
 
 namespace BLL
 {
-    public class Gerente : Empleado
+    public class GerenteBLL
     {
-        public Gerente() { 
-        
-        }
-        public Gerente(int id_empleado, string nombre, string apellido, string dni, Tipo_empleado tipoEmpleado, string usuario, string contrasena)
-        {
-            this.Id_Empleado = id_empleado;
-            this.Nombre = nombre;
-            this.Apellido = apellido;
-            this.Dni = dni;
-            this.Tipo_Empleado = tipoEmpleado;
-            this.Usuario = usuario;
-            this.Contrasenia = contrasena;
-        }
+        private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
+        private readonly VentaDAL ventaDAL = new VentaDAL();
 
-        public override bool Iniciar_Sesion(string user, string pass)
+        public bool IniciarSesion(string usuario, string contrasenia)
         {
-            DAL.EmpleadoDAL empleadoDAL = new DAL.EmpleadoDAL();
             DataTable dt = empleadoDAL.Iniciar_Sesion();
 
             foreach (DataRow fila in dt.Rows)
             {
-                if (fila["USUARIO"].Equals(user) && fila["CONTRASEÑA"].Equals(pass) && fila["DESCRIPCION"].Equals("Gerente"))
+                if (fila["USUARIO"].ToString() == usuario &&
+                    fila["CONTRASEÑA"].ToString() == contrasenia &&
+                    fila["DESCRIPCION"].ToString() == "Gerente")
                 {
                     return true;
                 }
-
             }
+
             return false;
         }
 
-        public void Listar_Ventas() { 
-        
-        }
-        public void Buscar_Venta()
+        public List<Venta> ListarVentas()
         {
-
+            try
+            {
+                return ventaDAL.ObtenerTodasLasVentas();
+            }
+            catch (Exception)
+            {
+                throw; // se puede mejorar con logs o manejo específico
+            }
         }
-        public void Ordenar_Por()
-        {
 
+        public Venta BuscarVenta(int idVenta)
+        {
+            if (idVenta <= 0)
+                throw new ArgumentException("El ID de la venta debe ser mayor a cero.");
+
+            return ventaDAL.BuscarVentaPorId(idVenta);
+        }
+
+        public List<Venta> OrdenarVentasPor(string criterio)
+        {
+            return ventaDAL.ObtenerVentasOrdenadasPor(criterio);
         }
     }
 }

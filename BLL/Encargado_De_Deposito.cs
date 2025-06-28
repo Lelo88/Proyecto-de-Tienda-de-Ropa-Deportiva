@@ -1,62 +1,64 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Text.RegularExpressions;
-using System.Threading.Tasks;
+using Entidad;
+using DAL;
 
 namespace BLL
 {
-    public class Encargado_De_Deposito : Empleado
+    public class EncargadoBLL
     {
-        public Encargado_De_Deposito() { 
-        
-        }
-        public Encargado_De_Deposito(int id_empleado, string nombre, string apellido, string dni, Tipo_empleado tipoEmpleado, string usuario, string contrasena)
-        {
-            this.Id_Empleado = id_empleado;
-            this.Nombre = nombre;
-            this.Apellido = apellido;
-            this.Dni = dni;
-            this.Tipo_Empleado = tipoEmpleado;
-            this.Usuario = usuario;
-            this.Contrasenia = contrasena;
-        }
-        public override bool Iniciar_Sesion(string user, string pass)
-        {
-            DAL.EmpleadoDAL empleadoDAL = new DAL.EmpleadoDAL();
-            DataTable dt = empleadoDAL.Iniciar_Sesion();
+        private readonly EncargadoDAL encargadoDAL = new EncargadoDAL();
 
-            foreach (DataRow fila in dt.Rows)
-            {
-                if (fila["USUARIO"].Equals(user) && fila["CONTRASEÑA"].Equals(pass) && fila["DESCRIPCION"].Equals("Encargado"))
-                {
-                    return true;
-                }
-
-            }
-            return false;
-        }
-        public object Visualizar_Producto() {
-            DAL.EncargadoDAL encargadoDAL = new DAL.EncargadoDAL();
+        public List<Producto> ListarProductos()
+        {
             return encargadoDAL.ListarProductos();
         }
-        public object Agregar_Producto(string nombre,string marca,string modelo,int cantidad,float precio,string deporte)
+
+        public bool AgregarProducto(Producto producto)
         {
-            DAL.EncargadoDAL encargadoDAL = new DAL.EncargadoDAL();
-            return encargadoDAL.AgregarProducto(nombre, marca, modelo, cantidad, precio, deporte);
+            ValidarProducto(producto, requiereId: false);
+            return encargadoDAL.AgregarProducto(producto);
         }
-        public object Modificar_Producto(int id_producto, string deporte,string nombre, int cantidad, string marca, string modelo, float precio)
+
+        public bool ModificarProducto(Producto producto)
         {
-            DAL.EncargadoDAL encargadoDAL = new DAL.EncargadoDAL();
-            return encargadoDAL.ModificarProducto(id_producto, deporte, nombre, cantidad, marca, modelo, precio);
+            ValidarProducto(producto, requiereId: true);
+            return encargadoDAL.ModificarProducto(producto);
         }
-        public object Eliminar_Producto(int idProducto)
+
+        public bool EliminarProducto(int idProducto)
         {
-            DAL.EncargadoDAL encargadoDAL = new DAL.EncargadoDAL();
+            if (idProducto <= 0)
+                throw new ArgumentException("El ID del producto debe ser válido.");
+
             return encargadoDAL.EliminarProducto(idProducto);
+        }
+
+        private void ValidarProducto(Producto producto, bool requiereId)
+        {
+            if (producto == null)
+                throw new ArgumentNullException("El producto no puede ser nulo.");
+
+            if (requiereId && producto.Id_Producto <= 0)
+                throw new ArgumentException("El ID del producto debe ser mayor a cero.");
+
+            if (string.IsNullOrWhiteSpace(producto.Nombre))
+                throw new ArgumentException("El nombre no puede estar vacío.");
+
+            if (string.IsNullOrWhiteSpace(producto.Marca))
+                throw new ArgumentException("La marca no puede estar vacía.");
+
+            if (string.IsNullOrWhiteSpace(producto.Modelo))
+                throw new ArgumentException("El modelo no puede estar vacío.");
+
+            if (producto.Cantidad < 0)
+                throw new ArgumentException("La cantidad no puede ser negativa.");
+
+            if (producto.Precio < 0)
+                throw new ArgumentException("El precio no puede ser negativo.");
+
+            if (producto.Deporte == null || producto.Deporte.Id_Deporte <= 0)
+                throw new ArgumentException("Debe asignarse un deporte válido al producto.");
         }
     }
 }

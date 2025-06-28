@@ -18,9 +18,9 @@ namespace Entidad
             }
         }
 
-        public Tipo_Empleado() { }
+        public TipoEmpleado() { }
 
-        public Tipo_Empleado(int id_tipoEmpleado, string descripcion)
+        public TipoEmpleado(int id_tipoEmpleado, string descripcion)
         {
             Id_TipoEmpleado = id_tipoEmpleado;
             Descripcion = descripcion;
