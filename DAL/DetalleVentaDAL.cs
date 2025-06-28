@@ -1,23 +1,49 @@
-﻿using System;
+﻿using Entidad;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
+using System.Data.SqlClient;
 
 namespace DAL
 {
     public class DetalleVentaDAL
     {
-        public object AgregarProductoALista(int idVenta,string nombreP,int cantidadP,float precioP)
+        private readonly Conexion conexion = new Conexion();
+
+        public bool CrearDetalle(DetalleVenta detalle)
         {
-            Conexion conexion = new Conexion();
+            try
+            {
+                string query = @"INSERT INTO detalle_venta (id_venta, id_producto, cantidad, precio_unitario)
+                                 VALUES (@idVenta, @idProducto, @cantidad, @precioUnitario)";
 
-            return true;
-            //ARREGLAR CONSULTA SQL
-            /*string insert = $"INSERT INTO empleado (id_tipo_empleado, nombre, apelido, dni, usuario, contraseña) " +
-                $"VALUES ({idTipoEmpleado}, '{nombre}', '{apellido}', '{dni}', '{usuario}', '{contraseña}');";
-            return conexion.EscribirPorComando(insert);*/
+                SqlParameter[] parametros = {
+                    new SqlParameter("@idVenta", detalle.Venta.Id_Venta),
+                    new SqlParameter("@idProducto", detalle.Producto.Id_Producto),
+                    new SqlParameter("@cantidad", detalle.Cantidad),
+                    new SqlParameter("@precioUnitario", detalle.Precio_Unitario)
+                };
 
+                return conexion.EscribirPorComando(query, parametros) > 0;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al registrar detalle de venta: " + ex.Message);
+                return false;
+            }
+        }
+
+        public bool CrearDetallesLote(List<DetalleVenta> detalles)
+        {
+            bool todoOk = true;
+
+            foreach (var detalle in detalles)
+            {
+                if (!CrearDetalle(detalle))
+                    todoOk = false; // Se puede adaptar a rollback si luego usás transacciones
+            }
+
+            return todoOk;
         }
     }
 }
