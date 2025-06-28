@@ -10,6 +10,13 @@ namespace Entidad
             : base(id_empleado, nombre, apellido, dni, tipoEmpleado, usuario, contrasena)
         {
         }
+
+        public override bool IniciarSesion(string usuario, string contrasenia)
+        {
+            // Implementación específica para este tipo de empleado
+            return usuario == Usuario && contrasenia == Contrasenia; // Ejemplo simple
+        }
+
     }
 }
 

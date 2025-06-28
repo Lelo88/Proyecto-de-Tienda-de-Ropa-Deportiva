@@ -9,34 +9,43 @@ namespace BLL
     {
         private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
 
-        public bool IniciarSesion(string usuario, string contrasena, out string tipoEmpleado)
+        public Empleado IniciarSesion(string usuario, string contrasenia)
         {
-            tipoEmpleado = string.Empty;
-
             try
             {
                 DataTable dt = empleadoDAL.Iniciar_Sesion();
 
-                foreach (DataRow row in dt.Rows)
+                foreach (DataRow fila in dt.Rows)
                 {
-                    string usuarioDb = row["USUARIO"].ToString();
-                    string contrasenaDb = row["CONTRASEÑA"].ToString();
-                    string descripcion = row["descripcion"].ToString();
+                    string user = fila["USUARIO"].ToString();
+                    string pass = fila["CONTRASEÑA"].ToString();
+                    string tipo = fila["DESCRIPCION"].ToString();
 
-                    if (usuarioDb.Equals(usuario, StringComparison.OrdinalIgnoreCase) &&
-                        contrasenaDb.Equals(contrasena))
+                    if (user == usuario && pass == contrasenia)
                     {
-                        tipoEmpleado = descripcion;
-                        return true;
+                        // Armamos el tipo de empleado correspondiente
+                        TipoEmpleado tipoEmpleado = new TipoEmpleado { Descripcion = tipo };
+
+                        if (tipo == "Administrador")
+                            return new Administrador { Usuario = user, Contrasenia = pass, TipoEmpleado = tipoEmpleado };
+                        else if (tipo == "Gerente")
+                            return new Gerente { Usuario = user, Contrasenia = pass, TipoEmpleado = tipoEmpleado };
+                        else if (tipo == "Vendedor")
+                            return new Vendedor { Usuario = user, Contrasenia = pass, TipoEmpleado = tipoEmpleado };
+                        else if (tipo == "Encargado")
+                            return new EncargadoDeDeposito { Usuario = user, Contrasenia = pass, TipoEmpleado = tipoEmpleado };
+                        else
+                            return null;
+
                     }
                 }
 
-                return false;
+                return null; // Usuario o contraseña incorrectos
             }
             catch (Exception ex)
             {
                 Console.WriteLine("Error al iniciar sesión: " + ex.Message);
-                return false;
+                return null;
             }
         }
 

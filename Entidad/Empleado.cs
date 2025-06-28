@@ -48,5 +48,7 @@ namespace Entidad
             Usuario = usuario;
             Contrasenia = contrasenia;
         }
+
+        public abstract bool IniciarSesion(string usuario, string contrasenia);
     }
 }
