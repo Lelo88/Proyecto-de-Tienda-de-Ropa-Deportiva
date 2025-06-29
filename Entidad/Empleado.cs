@@ -38,7 +38,7 @@ namespace Entidad
 
         public Empleado() { }
 
-        public Empleado(int id_empleado, string nombre, string apellido, string dni, Tipo_Empleado tipo_empleado, string usuario, string contrasenia)
+        public Empleado(int id_empleado, string nombre, string apellido, string dni, TipoEmpleado tipo_empleado, string usuario, string contrasenia)
         {
             Id_Empleado = id_empleado;
             Nombre = nombre;
@@ -48,5 +48,7 @@ namespace Entidad
             Usuario = usuario;
             Contrasenia = contrasenia;
         }
+
+        public abstract bool IniciarSesion(string usuario, string contrasenia);
     }
 }

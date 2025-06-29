@@ -44,7 +44,7 @@
     <Compile Include="Administrador.cs" />
     <Compile Include="Cliente.cs" />
     <Compile Include="Deporte.cs" />
-    <Compile Include="Detalle Venta.cs" />
+    <Compile Include="DetalleVenta.cs" />
     <Compile Include="Empleado.cs" />
     <Compile Include="Encargado_De_Deposito.cs" />
     <Compile Include="Gerente.cs" />
@@ -59,6 +59,10 @@
     <ProjectReference Include="..\DAL\DAL.csproj">
       <Project>{405e5e59-9cd0-4f9c-b71b-1b480f1eef9d}</Project>
       <Name>DAL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entidad\Entidad.csproj">
+      <Project>{72979162-732b-4673-936d-fcf2a102c8ec}</Project>
+      <Name>Entidad</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
