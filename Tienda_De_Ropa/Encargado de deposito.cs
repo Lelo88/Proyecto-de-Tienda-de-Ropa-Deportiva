@@ -1,4 +1,5 @@
 ﻿using BLL;
+using Entidad;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,6 +15,8 @@ namespace Tienda_De_Ropa
     public partial class EncargadoDeDeposito: Form
     {
         int decision = 1;
+        DeporteBLL deporteBLL = new DeporteBLL();
+
         public EncargadoDeDeposito()
         {
             InitializeComponent();
@@ -68,7 +71,7 @@ namespace Tienda_De_Ropa
         private void btn_agregarProducto_Click(object sender, EventArgs e)
         {
             ConfigurarDataGridViewColumnasPorCodigo();
-            BLL.Deporte deporte = new BLL.Deporte();
+            BLL.DeporteBLL deporte = new BLL.DeporteBLL();
             //AGREGA EL PRODUCTO A LA LISTA DE PRODUCTOS
             //DEBE ESTAR LA TABLA PREVIAMENTE CARGADA CON PRODUCTOS
             MessageBox.Show("Llene a continuacion los campos para agregar un nuevo producto");
@@ -90,7 +93,7 @@ namespace Tienda_De_Ropa
             cbo_Deporte.Enabled = true;
             //cbo_Deporte.Items.Clear();
             //cbo_Deporte.Items.Remove(cbo_Deporte.SelectedItem);
-            cbo_Deporte.DataSource=deporte.obtenerDeportes();
+            cbo_Deporte.DataSource=deporte.ObtenerNombresDeDeportes();
             txt_IdProducto.Text = "";
             txt_Nombre.Text = "";
             txt_Marca.Text ="";
@@ -101,7 +104,7 @@ namespace Tienda_De_Ropa
 
         private void btn_modificarProducto_Click(object sender, EventArgs e)
         {
-            BLL.Deporte deportes = new BLL.Deporte();
+            BLL.DeporteBLL deportes = new BLL.DeporteBLL();
             if (decision == 1)
             {
                 MessageBox.Show("Se habilito la modificacion de un producto");
@@ -117,7 +120,7 @@ namespace Tienda_De_Ropa
                 btn_ListarProductos.Enabled = false;
                 dgv_Deposito.Enabled = false;
                 cbo_Deporte.Enabled = true;
-                cbo_Deporte.DataSource = deportes.obtenerDeportes();
+                cbo_Deporte.DataSource = deportes.ObtenerNombresDeDeportes();
                 int idProducto = Convert.ToInt32(row.Cells["ColIdProducto"].Value);
                 string deporte = row.Cells["ColIdDeporte"].Value.ToString();
                 string nombre = row.Cells["ColNombre"].Value.ToString();
@@ -143,7 +146,7 @@ namespace Tienda_De_Ropa
             }
             else
             {
-                BLL.Encargado_De_Deposito encargado = new BLL.Encargado_De_Deposito();
+                BLL.EncargadoBLL encargado = new BLL.EncargadoBLL();
                 int idProducto = Convert.ToInt32(txt_IdProducto.Text);
                 string deporte = cbo_Deporte.SelectedItem.ToString();
                 string nombre = txt_Nombre.Text;
@@ -151,7 +154,7 @@ namespace Tienda_De_Ropa
                 string marca = txt_Marca.Text;
                 string modelo = txt_Modelo.Text;
                 float precio = Convert.ToSingle(txt_Precio.Text);
-                encargado.Modificar_Producto(idProducto,deporte,nombre,cantidad,marca,modelo,precio);
+                encargado.ModificarProducto(idProducto,deporte,nombre,cantidad,marca,modelo,precio);
                 MessageBox.Show("Se ha modificado un nuevo empleado correctamente");
                 MessageBox.Show("Por favor... liste nuevamente los empleados para visualizar los cambios");
                 txt_IdProducto.Text = "";
@@ -188,8 +191,8 @@ namespace Tienda_De_Ropa
             {
                 DataGridViewRow row = dgv_Deposito.CurrentRow;
                 int idProducto = Convert.ToInt32(row.Cells["ColIdProducto"].Value);
-                BLL.Encargado_De_Deposito encargado = new BLL.Encargado_De_Deposito();
-                encargado.Eliminar_Producto(idProducto);
+                BLL.EncargadoBLL encargado = new BLL.EncargadoBLL();
+                encargado.EliminarProducto(idProducto);
                 MessageBox.Show("Se elimino el empleado");
                 txt_IdProducto.Text = "";
                 txt_Nombre.Text = "";
@@ -228,9 +231,9 @@ namespace Tienda_De_Ropa
             dgv_Deposito.Enabled = true;
             btn_SeleccionarProducto.Enabled = true;
             btn_AgregarProducto.Enabled = true;
-            BLL.Encargado_De_Deposito encargado = new BLL.Encargado_De_Deposito();
+            BLL.EncargadoBLL encargado = new BLL.EncargadoBLL();
             ConfigurarDataGridViewColumnasPorCodigo();
-            dgv_Deposito.DataSource = encargado.Visualizar_Producto();
+            dgv_Deposito.DataSource = encargado.ListarProductos();
         }
         private void ConfigurarDataGridViewColumnasPorCodigo()
         {
@@ -247,14 +250,23 @@ namespace Tienda_De_Ropa
 
         private void btn_GuardarCambios_Click(object sender, EventArgs e)
         {
-            BLL.Encargado_De_Deposito encargado = new BLL.Encargado_De_Deposito();
-            string nombre= txt_Nombre.Text;
-            string marca = txt_Marca.Text;
-            string modelo = txt_Modelo.Text;
-            int cantidad = Convert.ToInt32(nud_Cantidad.Value);
-            float precio = Convert.ToInt32(txt_Precio.Text);
-            string deporte = cbo_Deporte.SelectedItem.ToString();
-            encargado.Agregar_Producto(nombre, marca, modelo, cantidad, precio, deporte);
+            BLL.EncargadoBLL encargado = new BLL.EncargadoBLL();
+            Producto producto = new Producto
+            {
+                Nombre = txt_Nombre.Text,
+                Marca = txt_Marca.Text,
+                Modelo = txt_Modelo.Text,
+                Cantidad = Convert.ToInt32(nud_Cantidad.Value),
+                Precio = Convert.ToSingle(txt_Precio.Text),
+                Deporte = new Deporte
+                {
+                    Id_Deporte = ObtenerIdDeporteDesdeNombre(cbo_Deporte.SelectedItem.ToString()),
+                    Nombre = cbo_Deporte.SelectedItem.ToString()
+                }
+            };
+
+            encargado.AgregarProducto(producto);
+
             MessageBox.Show("Se ha agregado un nuevo producto correctamente");
             MessageBox.Show("Por favor... liste nuevamente los productos para visualizar los cambios");
             txt_IdProducto.Text = "";

@@ -41,71 +41,63 @@ namespace Tienda_De_Ropa
 
         private void btn_iniciar_Click(object sender, EventArgs e)
         {
-            string user = txt_Usuario.Text;
-            string pass = txt_Contrasenia.Text;
-            
-            BLL.Administrador administrador = new BLL.Administrador();// Instancia de la clase Administrador
-            BLL.Encargado_De_Deposito encargado = new BLL.Encargado_De_Deposito();// Instancia de la clase Administrador
-            BLL.Gerente gerente = new BLL.Gerente();// Instancia de la clase Administrador
-            BLL.Vendedor vendedor = new BLL.Vendedor();// Instancia de la clase Administrador
-            BLL.Tipo_empleado tipo_empleado = new BLL.Tipo_empleado();// Instancia de la clase Tipo_empleado
+            string user = txt_Usuario.Text.Trim();
+            string pass = txt_Contrasenia.Text.Trim();
 
-            try
+            if (string.IsNullOrWhiteSpace(user) || string.IsNullOrWhiteSpace(pass))
             {
-                if (administrador.Iniciar_Sesion(user, pass))
-                {
-                    MessageBox.Show("Bienvenido ADMINISTRADOR: " + user);
-                    this.Hide();
-                    Administrador frmadministrador = new Administrador();
-                    frmadministrador.Show();
-                    
-                }
-
-
-                if (encargado.Iniciar_Sesion(user, pass))
-                {
-
-                    MessageBox.Show("Bienvenido ENCARGADO: " + user);
-                    this.Hide();
-                    EncargadoDeDeposito frmencargado = new EncargadoDeDeposito();
-                    frmencargado.Show();
-                }
-
-                if (gerente.Iniciar_Sesion(user, pass))
-                {
-
-                    MessageBox.Show("Bienvenido GERENTE: " + user);
-                    this.Hide();
-                    Gerente frmgerente = new Gerente();
-                    frmgerente.Show();
-                }
-
-                if (vendedor.Iniciar_Sesion(user, pass))
-                {
-
-                    MessageBox.Show("Bienvenido VENDEDOR " + user);
-                    this.Hide();
-                    Vendedor frmvendedor = new Vendedor(user,pass);
-                    frmvendedor.Show();
-
-                }
-
-                if (string.IsNullOrEmpty(txt_Usuario.Text) || string.IsNullOrEmpty(txt_Contrasenia.Text))
-                {
-                    MessageBox.Show("Por favor, complete todos los campos.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Error al iniciar sesión. Por favor, intente nuevamente.");
+                MessageBox.Show("Por favor, complete todos los campos.");
                 return;
             }
 
-            
-            
-            
-            
+            try
+            {
+                // Instanciás cada tipo de empleado
+                var administrador = new BLL.Administrador();
+                var gerente = new BLL.GerenteBLL();
+                var vendedor = new BLL.VendedorBLL();
+                var encargado = new BLL.EncargadoBLL();
+
+                if (administrador.IniciarSesion(user, pass))
+                {
+                    MessageBox.Show($"Bienvenido ADMINISTRADOR: {user}");
+                    this.Hide();
+                    new Administrador().Show();
+                    return;
+                }
+
+                if (gerente.IniciarSesion(user, pass))
+                {
+                    MessageBox.Show($"Bienvenido GERENTE: {user}");
+                    this.Hide();
+                    new Gerente().Show();
+                    return;
+                }
+
+                if (encargado.IniciarSesion(user, pass))
+                {
+                    MessageBox.Show($"Bienvenido ENCARGADO: {user}");
+                    this.Hide();
+                    new EncargadoDeDeposito().Show();
+                    return;
+                }
+
+                if (vendedor.IniciarSesion(user, pass))
+                {
+                    MessageBox.Show($"Bienvenido VENDEDOR: {user}");
+                    this.Hide();
+                    new Vendedor(user, pass).Show();
+                    return;
+                }
+
+                MessageBox.Show("Usuario o contraseña incorrectos.");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al iniciar sesión: " + ex.Message);
+            }
         }
+
 
         private void txt_usuario_TextChanged(object sender, EventArgs e)
         {

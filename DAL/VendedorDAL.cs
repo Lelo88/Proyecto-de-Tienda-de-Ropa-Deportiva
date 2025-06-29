@@ -1,64 +1,117 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
+using Entidad;
 
 namespace DAL
 {
     public class VendedorDAL
     {
-        public DataTable ObtenerProducto()
-        {
-            Conexion conexion = new Conexion();
+        private Conexion conexion = new Conexion();
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            DataTable dt = conexion.LeerPorComando("select NOMBRE from producto");
-            return dt;
-        }
-        public DataTable ObtenerCantidad(string producto)
+        public List<string> ObtenerNombresDeProductos()
         {
-            Conexion conexion = new Conexion();
+            try
+            {
+                var productos = new List<string>();
+                string query = "SELECT nombre FROM producto";
+                DataTable dt = conexion.LeerPorComando(query);
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            return conexion.LeerPorComando($"SELECT cantidad FROM producto where nombre='{producto}'");
-             
+                foreach (DataRow row in dt.Rows)
+                {
+                    productos.Add(row["nombre"].ToString());
+                }
+
+                return productos;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener nombres de productos: " + ex.Message);
+                return new List<string>();
+            }
         }
-        public DataTable ObtenerPrecioUnitario(string producto)
+
+        public int ObtenerStockPorProducto(string nombreProducto)
         {
-            Conexion conexion = new Conexion();
+            try
+            {
+                string query = "SELECT cantidad FROM producto WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@nombre", nombreProducto)
+                };
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            DataTable dt = conexion.LeerPorComando($"SELECT precio FROM producto where nombre='{producto}'");
-            return dt;
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                return dt.Rows.Count > 0 ? Convert.ToInt32(dt.Rows[0]["cantidad"]) : -1;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener stock: " + ex.Message);
+                return -1;
+            }
         }
-        /*public DataTable ObtenerPrecioUnitario()
+
+        public float ObtenerPrecioPorProducto(string nombreProducto)
         {
-            Conexion conexion = new Conexion();
+            try
+            {
+                string query = "SELECT precio FROM producto WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@nombre", nombreProducto)
+                };
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            DataTable dt = conexion.LeerPorComando("select NOMBRE from producto");
-            return dt;
-        }*/
-        public DataTable ObtenerIdVendedor(string user, string pass)
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                return dt.Rows.Count > 0 ? Convert.ToSingle(dt.Rows[0]["precio"]) : -1f;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener precio: " + ex.Message);
+                return -1f;
+            }
+        }
+
+        public Producto ObtenerProductoCompleto(string nombreProducto)
         {
-            Conexion conexion = new Conexion();
-            DataTable dt = conexion.LeerPorComando($"SELECT id_empleado from empleado where usuario='{user}' AND contraseña='{pass}'");
-            return dt;
+            try
+            {
+                string query = "SELECT * FROM producto WHERE nombre = @nombre";
+                SqlParameter[] parametros = {
+                    new SqlParameter("@nombre", nombreProducto)
+                };
+
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                if (dt.Rows.Count == 0) return null;
+
+                DataRow row = dt.Rows[0];
+                return new Producto
+                {
+                    Id_Producto = Convert.ToInt32(row["id_producto"]),
+                    Nombre = row["nombre"].ToString(),
+                    Cantidad = Convert.ToInt32(row["cantidad"]),
+                    Precio = Convert.ToSingle(row["precio"]),
+                    Marca = row["marca"].ToString(),
+                    Modelo = row["modelo"].ToString()
+                    // Nota: deberías cargar también el deporte si hacés join
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener producto completo: " + ex.Message);
+                return null;
+            }
         }
-        public DataTable ObtenerCantidadDeTodosLosProductos()
+
+        public int ObtenerIdVendedor(string usuario, string contrasenia)
         {
-            Conexion conexion = new Conexion();
+            string query = "SELECT id_empleado FROM empleado WHERE usuario = @usuario AND contraseña = @contrasenia";
+            SqlParameter[] parametros = {
+        new SqlParameter("@usuario", usuario),
+        new SqlParameter("@contrasenia", contrasenia)
+    };
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            return conexion.LeerPorComando($"SELECT cantidad FROM producto ");
+            object resultado = conexion.EjecutarScalar(query, parametros);
+            return resultado != null ? Convert.ToInt32(resultado) : -1;
         }
-        public DataTable ObtenerTodosLosPreciosUnitarios() {
-            Conexion conexion = new Conexion();
 
-            //DEVUELVE TODOS LOS PRODUCTOS
-            return conexion.LeerPorComando($"SELECT precio FROM producto ");
-        }
     }
 }

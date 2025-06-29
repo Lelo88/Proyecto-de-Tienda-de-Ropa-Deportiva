@@ -1,4 +1,6 @@
-﻿namespace Tienda_De_Ropa
+﻿using System;
+
+namespace Tienda_De_Ropa
 {
     partial class Vendedor
     {
@@ -607,6 +609,31 @@
             this.ResumeLayout(false);
             this.PerformLayout();
 
+        }
+
+        private void txt_Precio_TextChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void txt_Fecha_TextChanged(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void btn_ListarProductos_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void btn_EliminarProductoDeLista_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+        private void btn_ConfirmarVenta_Click(object sender, EventArgs e)
+        {
+            throw new NotImplementedException();
         }
 
         #endregion

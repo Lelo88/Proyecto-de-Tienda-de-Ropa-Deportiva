@@ -1,69 +1,50 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL;
+using Entidad;
 
 namespace BLL
 {
-    public class Producto
+    public class ProductoBLL
     {
-		private int id_producto;
+        private readonly ProductoDAL productoDAL = new ProductoDAL();
 
-		public int Id_producto
-		{
-			get { return id_producto; }
-			set { id_producto = value; }
-		}
-		private string nombre;
-
-		public string Nombre
-		{
-			get { return nombre; }
-			set { nombre = value; }
-		}
-
-		private int cantidad;
-
-		public int Cantidad
-		{
-			get { return cantidad; }
-			set { cantidad = value; }
-		}
-
-		private float precio;
-
-		public float Precio
-		{
-			get { return precio; }
-			set { precio = value; }
-		}
-
-		private Deporte deporte;
-
-		public Deporte Deporte
+        public List<Producto> ListarProductos()
         {
-			get { return deporte; }
-			set { deporte = value; }
-		}
+            return productoDAL.ObtenerTodosLosProductos();
+        }
 
-		private string marca;
+        public Producto BuscarProductoPorNombre(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                throw new ArgumentException("El nombre del producto no puede estar vacío.");
 
-		public string Marca
-		{
-			get { return marca; }
-			set { marca = value; }
-		}
+            return productoDAL.ObtenerProductoPorNombre(nombre);
+        }
 
-		private string modelo;
+        public bool VerificarStock(string nombre, int cantidadDeseada)
+        {
+            if (cantidadDeseada <= 0)
+                throw new ArgumentException("La cantidad deseada debe ser mayor a cero.");
 
-		public string Modelo
-		{
-			get { return modelo; }
-			set { modelo = value; }
-		}
+            int stock = productoDAL.ObtenerStock(nombre);
+            return stock >= cantidadDeseada;
+        }
 
+        public float ObtenerPrecioUnitario(string nombre)
+        {
+            return productoDAL.ObtenerPrecio(nombre);
+        }
 
+        public float CalcularSubtotal(string nombre, int cantidad)
+        {
+            float precio = ObtenerPrecioUnitario(nombre);
+            return precio * cantidad;
+        }
 
-	}
+        public void DescontarStock(string nombre, int cantidad)
+        {
+            productoDAL.ActualizarStock(nombre, cantidad);
+        }
+    }
 }

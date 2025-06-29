@@ -92,7 +92,7 @@ namespace Tienda_De_Ropa
 
         private void btn_AgregarEmpleado_Click(object sender, EventArgs e)
         {
-            BLL.Tipo_empleado tipo_Empleado = new BLL.Tipo_empleado();
+            BLL.TipoEmpleadoBLL tipo_Empleado = new BLL.TipoEmpleadoBLL();
             MessageBox.Show("Llene a continuacion los campos para agregar un nuevo empleado");
             dgv_Empleados.Enabled = false;
             btn_GuardarCambios.Enabled = true;
@@ -115,7 +115,7 @@ namespace Tienda_De_Ropa
             txt_usuario.Text = "";
             txt_contrasenia.Text = "";
             cbo_tipoDeEmpleado.Enabled = true;
-            cbo_tipoDeEmpleado.DataSource = tipo_Empleado.obtenerTiposDeEmpleado();
+            cbo_tipoDeEmpleado.DataSource = tipo_Empleado.ObtenerTiposDeEmpleado();
 
         }
         private void btn_GuardarCambios_Click(object sender, EventArgs e)
@@ -156,7 +156,7 @@ namespace Tienda_De_Ropa
 
         private void btn_ModificarEmpleado_Click(object sender, EventArgs e)
         {
-            BLL.Tipo_empleado tipo_Empleado = new BLL.Tipo_empleado();
+            BLL.TipoEmpleadoBLL tipo_Empleado = new BLL.TipoEmpleadoBLL();
             if (decision==1)
             {
                 MessageBox.Show("Se habilito la modificacion de un empleado");
@@ -173,7 +173,7 @@ namespace Tienda_De_Ropa
                 //cbo_tipoDeEmpleado.Items.Clear();
                 //cbo_tipoDeEmpleado.SelectedItem = "";
                 //cbo_tipoDeEmpleado.Items.Remove(cbo_tipoDeEmpleado.SelectedItem);
-                cbo_tipoDeEmpleado.DataSource = tipo_Empleado.obtenerTiposDeEmpleado();
+                cbo_tipoDeEmpleado.DataSource = tipo_Empleado.ObtenerTiposDeEmpleado();
                 int idEmpleado = Convert.ToInt32(row.Cells["ColIdEmpleado"].Value);
                 string descripcion = row.Cells["ColDescripcion"].Value.ToString();
                 string nombre = row.Cells["ColNombre"].Value.ToString();
@@ -207,7 +207,10 @@ namespace Tienda_De_Ropa
                 string dni = txt_dni.Text;
                 string usuario = txt_usuario.Text;
                 string contraseña = txt_contrasenia.Text;
-                administrador.Modificar_empleado(idEmpleado,descripcion, nombre, apellido, dni, usuario, contraseña);
+                // Fix for the CS1525 error: Replace `int(idEmpleado)` with `Convert.ToInt32(idEmpleado)`
+                // This ensures the conversion is done correctly using the appropriate method.
+
+                administrador.Modificar_empleado(Convert.ToInt32(idEmpleado), descripcion, nombre, apellido, dni, usuario, contraseña);
                 MessageBox.Show("Se ha modificado un nuevo empleado correctamente");
                 MessageBox.Show("Por favor... liste nuevamente los empleados para visualizar los cambios");
                 txt_idEmpleado.Text = "";
