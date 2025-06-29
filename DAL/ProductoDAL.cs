@@ -138,7 +138,7 @@ namespace DAL
             }
         }
 
-        public bool Actualizar(Producto producto)
+        public bool ModificarProducto(Producto producto)
         {
             try
             {

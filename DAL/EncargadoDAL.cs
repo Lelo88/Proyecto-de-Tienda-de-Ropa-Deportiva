@@ -9,7 +9,7 @@ namespace DAL
     public class EncargadoDAL
     {
         private readonly Conexion conexion = new Conexion();
-
+       
         public List<Producto> ListarProductos()
         {
             List<Producto> productos = new List<Producto>();

@@ -10,6 +10,8 @@ namespace BLL
     {
         private readonly EncargadoDAL encargadoDAL = new EncargadoDAL();
         private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
+        private readonly ProductoDAL productoDAL = new ProductoDAL();
+
 
         public List<Producto> ListarProductos()
         {
@@ -25,7 +27,7 @@ namespace BLL
         public bool ModificarProducto(Producto producto)
         {
             ValidarProducto(producto, requiereId: true);
-            return encargadoDAL.ModificarProducto(producto);
+            return productoDAL.ModificarProducto(producto);
         }
 
         public bool EliminarProducto(int idProducto)
