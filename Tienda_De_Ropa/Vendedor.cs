@@ -13,11 +13,12 @@ namespace Tienda_De_Ropa
         private readonly MetodoDePagoBLL metodo = new MetodoDePagoBLL();
         private readonly ProductoBLL productoBLL = new ProductoBLL(); // CORREGIDO
         private List<Producto> listaProductos = new List<Producto>();
+        private readonly VendedorBLL vendedor = new VendedorBLL();
 
         public Vendedor(string user, string pass)
         {
             InitializeComponent();
-            txt_IdVendedor.Text = "Vendedor123"; // Acá se debería asignar el ID, si se implementa correctamente
+            label1.Text = "Vendedor: " + vendedor.ObtenerNombreCompletoPorUsuario(user);
         }
 
         private void Vendedor_Load(object sender, EventArgs e) { }
@@ -118,7 +119,6 @@ namespace Tienda_De_Ropa
 
         private void LimpiarFormulario()
         {
-            txt_IdVendedor.Clear();
             txt_IdVenta.Clear();
             txt_ApellidoCliente.Clear();
             txt_NombreCliente.Clear();

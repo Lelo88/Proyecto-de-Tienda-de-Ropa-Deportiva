@@ -30,13 +30,12 @@ namespace Tienda_De_Ropa
         /// </summary>
         private void InitializeComponent()
         {
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             this.btn_CerrarSesion = new System.Windows.Forms.Button();
             this.btn_GenerarVenta = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
-            this.txt_IdVendedor = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.txt_IdVenta = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -107,20 +106,9 @@ namespace Tienda_De_Ropa
             this.label1.Location = new System.Drawing.Point(13, 112);
             this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(150, 29);
+            this.label1.Size = new System.Drawing.Size(239, 45);
             this.label1.TabIndex = 3;
             this.label1.Text = "Vendedor N°:";
-            // 
-            // txt_IdVendedor
-            // 
-            this.txt_IdVendedor.Enabled = false;
-            this.txt_IdVendedor.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txt_IdVendedor.Location = new System.Drawing.Point(171, 109);
-            this.txt_IdVendedor.Margin = new System.Windows.Forms.Padding(4);
-            this.txt_IdVendedor.Name = "txt_IdVendedor";
-            this.txt_IdVendedor.Size = new System.Drawing.Size(91, 35);
-            this.txt_IdVendedor.TabIndex = 5;
-            this.txt_IdVendedor.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
             // label2
             // 
@@ -130,7 +118,7 @@ namespace Tienda_De_Ropa
             this.label2.Location = new System.Drawing.Point(270, 112);
             this.label2.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(114, 29);
+            this.label2.Size = new System.Drawing.Size(184, 45);
             this.label2.TabIndex = 6;
             this.label2.Text = "Venta N°:";
             // 
@@ -141,7 +129,7 @@ namespace Tienda_De_Ropa
             this.txt_IdVenta.Location = new System.Drawing.Point(392, 109);
             this.txt_IdVenta.Margin = new System.Windows.Forms.Padding(4);
             this.txt_IdVenta.Name = "txt_IdVenta";
-            this.txt_IdVenta.Size = new System.Drawing.Size(102, 35);
+            this.txt_IdVenta.Size = new System.Drawing.Size(102, 52);
             this.txt_IdVenta.TabIndex = 7;
             this.txt_IdVenta.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -153,7 +141,7 @@ namespace Tienda_De_Ropa
             this.label3.Location = new System.Drawing.Point(400, 263);
             this.label3.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(78, 29);
+            this.label3.Size = new System.Drawing.Size(123, 45);
             this.label3.TabIndex = 8;
             this.label3.Text = "Fecha:";
             // 
@@ -164,7 +152,7 @@ namespace Tienda_De_Ropa
             this.txt_Fecha.Location = new System.Drawing.Point(587, 260);
             this.txt_Fecha.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Fecha.Name = "txt_Fecha";
-            this.txt_Fecha.Size = new System.Drawing.Size(146, 35);
+            this.txt_Fecha.Size = new System.Drawing.Size(146, 52);
             this.txt_Fecha.TabIndex = 9;
             this.txt_Fecha.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.txt_Fecha.TextChanged += new System.EventHandler(this.txt_Fecha_TextChanged);
@@ -177,7 +165,7 @@ namespace Tienda_De_Ropa
             this.label4.Location = new System.Drawing.Point(240, 19);
             this.label4.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label4.Name = "label4";
-            this.label4.Size = new System.Drawing.Size(270, 45);
+            this.label4.Size = new System.Drawing.Size(440, 74);
             this.label4.TabIndex = 10;
             this.label4.Text = "Area: Vendedor";
             // 
@@ -189,7 +177,7 @@ namespace Tienda_De_Ropa
             this.label5.Location = new System.Drawing.Point(13, 224);
             this.label5.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(81, 29);
+            this.label5.Size = new System.Drawing.Size(128, 45);
             this.label5.TabIndex = 11;
             this.label5.Text = "D.N.I:";
             // 
@@ -200,7 +188,7 @@ namespace Tienda_De_Ropa
             this.txt_DniCliente.Location = new System.Drawing.Point(149, 221);
             this.txt_DniCliente.Margin = new System.Windows.Forms.Padding(4);
             this.txt_DniCliente.Name = "txt_DniCliente";
-            this.txt_DniCliente.Size = new System.Drawing.Size(146, 35);
+            this.txt_DniCliente.Size = new System.Drawing.Size(146, 52);
             this.txt_DniCliente.TabIndex = 12;
             this.txt_DniCliente.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -212,7 +200,7 @@ namespace Tienda_De_Ropa
             this.label6.Location = new System.Drawing.Point(400, 185);
             this.label6.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(108, 29);
+            this.label6.Size = new System.Drawing.Size(170, 45);
             this.label6.TabIndex = 13;
             this.label6.Text = "Nombres:";
             // 
@@ -224,7 +212,7 @@ namespace Tienda_De_Ropa
             this.label7.Location = new System.Drawing.Point(13, 263);
             this.label7.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label7.Name = "label7";
-            this.label7.Size = new System.Drawing.Size(108, 29);
+            this.label7.Size = new System.Drawing.Size(171, 45);
             this.label7.TabIndex = 14;
             this.label7.Text = "Apellidos:";
             // 
@@ -235,7 +223,7 @@ namespace Tienda_De_Ropa
             this.txt_NombreCliente.Location = new System.Drawing.Point(587, 185);
             this.txt_NombreCliente.Margin = new System.Windows.Forms.Padding(4);
             this.txt_NombreCliente.Name = "txt_NombreCliente";
-            this.txt_NombreCliente.Size = new System.Drawing.Size(146, 35);
+            this.txt_NombreCliente.Size = new System.Drawing.Size(146, 52);
             this.txt_NombreCliente.TabIndex = 15;
             this.txt_NombreCliente.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -246,7 +234,7 @@ namespace Tienda_De_Ropa
             this.txt_ApellidoCliente.Location = new System.Drawing.Point(149, 257);
             this.txt_ApellidoCliente.Margin = new System.Windows.Forms.Padding(4);
             this.txt_ApellidoCliente.Name = "txt_ApellidoCliente";
-            this.txt_ApellidoCliente.Size = new System.Drawing.Size(146, 35);
+            this.txt_ApellidoCliente.Size = new System.Drawing.Size(146, 52);
             this.txt_ApellidoCliente.TabIndex = 16;
             this.txt_ApellidoCliente.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -258,7 +246,7 @@ namespace Tienda_De_Ropa
             this.label8.Location = new System.Drawing.Point(12, 310);
             this.label8.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label8.Name = "label8";
-            this.label8.Size = new System.Drawing.Size(228, 29);
+            this.label8.Size = new System.Drawing.Size(361, 45);
             this.label8.TabIndex = 17;
             this.label8.Text = "Nombre del producto:";
             // 
@@ -270,7 +258,7 @@ namespace Tienda_De_Ropa
             this.cbo_Producto.Location = new System.Drawing.Point(248, 307);
             this.cbo_Producto.Margin = new System.Windows.Forms.Padding(4);
             this.cbo_Producto.Name = "cbo_Producto";
-            this.cbo_Producto.Size = new System.Drawing.Size(407, 37);
+            this.cbo_Producto.Size = new System.Drawing.Size(407, 53);
             this.cbo_Producto.TabIndex = 18;
             this.cbo_Producto.SelectedIndexChanged += new System.EventHandler(this.cbo_Producto_SelectedIndexChanged);
             // 
@@ -282,7 +270,7 @@ namespace Tienda_De_Ropa
             this.label9.Location = new System.Drawing.Point(12, 356);
             this.label9.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label9.Name = "label9";
-            this.label9.Size = new System.Drawing.Size(186, 29);
+            this.label9.Size = new System.Drawing.Size(300, 45);
             this.label9.TabIndex = 19;
             this.label9.Text = "Cantidad a llevar:";
             // 
@@ -294,7 +282,7 @@ namespace Tienda_De_Ropa
             this.label11.Location = new System.Drawing.Point(12, 393);
             this.label11.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label11.Name = "label11";
-            this.label11.Size = new System.Drawing.Size(177, 29);
+            this.label11.Size = new System.Drawing.Size(278, 45);
             this.label11.TabIndex = 23;
             this.label11.Text = "Precio Unitario: ";
             // 
@@ -305,7 +293,7 @@ namespace Tienda_De_Ropa
             this.txt_Precio.Location = new System.Drawing.Point(248, 390);
             this.txt_Precio.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Precio.Name = "txt_Precio";
-            this.txt_Precio.Size = new System.Drawing.Size(147, 35);
+            this.txt_Precio.Size = new System.Drawing.Size(147, 52);
             this.txt_Precio.TabIndex = 24;
             this.txt_Precio.Text = "0";
             this.txt_Precio.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -380,7 +368,7 @@ namespace Tienda_De_Ropa
             this.nud_Cantidad.Location = new System.Drawing.Point(248, 350);
             this.nud_Cantidad.Margin = new System.Windows.Forms.Padding(4);
             this.nud_Cantidad.Name = "nud_Cantidad";
-            this.nud_Cantidad.Size = new System.Drawing.Size(92, 35);
+            this.nud_Cantidad.Size = new System.Drawing.Size(92, 52);
             this.nud_Cantidad.TabIndex = 31;
             this.nud_Cantidad.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.nud_Cantidad.ValueChanged += new System.EventHandler(this.nud_Cantidad_ValueChanged);
@@ -393,7 +381,7 @@ namespace Tienda_De_Ropa
             this.label12.Location = new System.Drawing.Point(243, 437);
             this.label12.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label12.Name = "label12";
-            this.label12.Size = new System.Drawing.Size(167, 29);
+            this.label12.Size = new System.Drawing.Size(266, 45);
             this.label12.TabIndex = 32;
             this.label12.Text = "Total estimado:";
             // 
@@ -404,7 +392,7 @@ namespace Tienda_De_Ropa
             this.txt_Total.Location = new System.Drawing.Point(412, 438);
             this.txt_Total.Margin = new System.Windows.Forms.Padding(4);
             this.txt_Total.Name = "txt_Total";
-            this.txt_Total.Size = new System.Drawing.Size(134, 31);
+            this.txt_Total.Size = new System.Drawing.Size(134, 45);
             this.txt_Total.TabIndex = 33;
             this.txt_Total.Text = "0";
             this.txt_Total.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -423,7 +411,7 @@ namespace Tienda_De_Ropa
             this.cbo_MetodoDePago.Location = new System.Drawing.Point(587, 221);
             this.cbo_MetodoDePago.Margin = new System.Windows.Forms.Padding(4);
             this.cbo_MetodoDePago.Name = "cbo_MetodoDePago";
-            this.cbo_MetodoDePago.Size = new System.Drawing.Size(146, 37);
+            this.cbo_MetodoDePago.Size = new System.Drawing.Size(146, 53);
             this.cbo_MetodoDePago.TabIndex = 34;
             // 
             // label13
@@ -434,7 +422,7 @@ namespace Tienda_De_Ropa
             this.label13.Location = new System.Drawing.Point(400, 224);
             this.label13.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label13.Name = "label13";
-            this.label13.Size = new System.Drawing.Size(179, 29);
+            this.label13.Size = new System.Drawing.Size(282, 45);
             this.label13.TabIndex = 35;
             this.label13.Text = "Metodo de pago:";
             // 
@@ -446,7 +434,7 @@ namespace Tienda_De_Ropa
             this.label10.Location = new System.Drawing.Point(13, 83);
             this.label10.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label10.Name = "label10";
-            this.label10.Size = new System.Drawing.Size(210, 29);
+            this.label10.Size = new System.Drawing.Size(336, 45);
             this.label10.TabIndex = 37;
             this.label10.Text = "Datos del vendedor:";
             // 
@@ -458,7 +446,7 @@ namespace Tienda_De_Ropa
             this.label14.Location = new System.Drawing.Point(13, 156);
             this.label14.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(225, 29);
+            this.label14.Size = new System.Drawing.Size(356, 45);
             this.label14.TabIndex = 38;
             this.label14.Text = "Datos del comprador:";
             // 
@@ -470,7 +458,7 @@ namespace Tienda_De_Ropa
             this.label15.Location = new System.Drawing.Point(13, 185);
             this.label15.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label15.Name = "label15";
-            this.label15.Size = new System.Drawing.Size(123, 29);
+            this.label15.Size = new System.Drawing.Size(200, 45);
             this.label15.TabIndex = 39;
             this.label15.Text = "Cliente N°:";
             // 
@@ -481,7 +469,7 @@ namespace Tienda_De_Ropa
             this.txt_ClienteNro.Location = new System.Drawing.Point(149, 185);
             this.txt_ClienteNro.Margin = new System.Windows.Forms.Padding(4);
             this.txt_ClienteNro.Name = "txt_ClienteNro";
-            this.txt_ClienteNro.Size = new System.Drawing.Size(96, 35);
+            this.txt_ClienteNro.Size = new System.Drawing.Size(96, 52);
             this.txt_ClienteNro.TabIndex = 40;
             this.txt_ClienteNro.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             // 
@@ -493,37 +481,37 @@ namespace Tienda_De_Ropa
             this.label16.Location = new System.Drawing.Point(13, 437);
             this.label16.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label16.Name = "label16";
-            this.label16.Size = new System.Drawing.Size(204, 29);
+            this.label16.Size = new System.Drawing.Size(324, 45);
             this.label16.TabIndex = 41;
             this.label16.Text = "Lista de Productos:";
             // 
             // dgv_ProductosCargados
             // 
-            dataGridViewCellStyle4.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle4.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle4.ForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.SelectionBackColor = System.Drawing.Color.Yellow;
-            dataGridViewCellStyle4.SelectionForeColor = System.Drawing.Color.Black;
-            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_ProductosCargados.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle4;
+            dataGridViewCellStyle1.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle1.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle1.ForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.SelectionBackColor = System.Drawing.Color.Yellow;
+            dataGridViewCellStyle1.SelectionForeColor = System.Drawing.Color.Black;
+            dataGridViewCellStyle1.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_ProductosCargados.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgv_ProductosCargados.BackgroundColor = System.Drawing.Color.Yellow;
-            dataGridViewCellStyle5.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle5.BackColor = System.Drawing.Color.Yellow;
-            dataGridViewCellStyle5.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle5.ForeColor = System.Drawing.SystemColors.WindowText;
-            dataGridViewCellStyle5.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle5.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_ProductosCargados.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle5;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.Color.Yellow;
+            dataGridViewCellStyle2.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.WindowText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_ProductosCargados.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgv_ProductosCargados.ColumnHeadersHeight = 29;
-            dataGridViewCellStyle6.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
-            dataGridViewCellStyle6.BackColor = System.Drawing.Color.Yellow;
-            dataGridViewCellStyle6.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dataGridViewCellStyle6.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle6.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle6.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgv_ProductosCargados.DefaultCellStyle = dataGridViewCellStyle6;
+            dataGridViewCellStyle3.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleCenter;
+            dataGridViewCellStyle3.BackColor = System.Drawing.Color.Yellow;
+            dataGridViewCellStyle3.Font = new System.Drawing.Font("Comic Sans MS", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            dataGridViewCellStyle3.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle3.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle3.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgv_ProductosCargados.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgv_ProductosCargados.Enabled = false;
             this.dgv_ProductosCargados.Location = new System.Drawing.Point(13, 469);
             this.dgv_ProductosCargados.Name = "dgv_ProductosCargados";
@@ -559,7 +547,7 @@ namespace Tienda_De_Ropa
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.SystemColors.MenuHighlight;
-            this.ClientSize = new System.Drawing.Size(750, 617);
+            this.ClientSize = new System.Drawing.Size(1268, 915);
             this.Controls.Add(this.btn_ListarProductos);
             this.Controls.Add(this.panel1);
             this.Controls.Add(this.label10);
@@ -594,7 +582,6 @@ namespace Tienda_De_Ropa
             this.Controls.Add(this.label3);
             this.Controls.Add(this.txt_IdVenta);
             this.Controls.Add(this.label2);
-            this.Controls.Add(this.txt_IdVendedor);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.btn_GenerarVenta);
             this.Controls.Add(this.btn_CerrarSesion);
@@ -641,7 +628,6 @@ namespace Tienda_De_Ropa
         private System.Windows.Forms.Button btn_CerrarSesion;
         private System.Windows.Forms.Button btn_GenerarVenta;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.TextBox txt_IdVendedor;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.TextBox txt_IdVenta;
         private System.Windows.Forms.Label label3;
