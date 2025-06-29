@@ -1,18 +1,26 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DAL;
 using Entidad;
-using DAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace BLL
 {
     public class VendedorBLL
     {
         private readonly VendedorDAL vendedorDAL = new VendedorDAL();
+        private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
 
         public List<string> ObtenerNombresDeProductos()
         {
             return vendedorDAL.ObtenerNombresDeProductos();
         }
+
+        public int ObtenerIdVendedor(string usuario, string contrasenia)
+        {
+            return vendedorDAL.ObtenerIdVendedor(usuario, contrasenia);
+        }
+
 
         public Entidad.Producto BuscarProducto(string nombre)
         {
@@ -45,6 +53,31 @@ namespace BLL
         public void RealizarVenta(Venta venta)
         {
             // Lógica futura
+        }
+
+        public bool IniciarSesion(string user, string pass)
+        {
+            try
+            {
+                DataTable dt = empleadoDAL.Iniciar_Sesion();
+
+                foreach (DataRow fila in dt.Rows)
+                {
+                    if (fila["USUARIO"].ToString() == user &&
+                        fila["CONTRASEÑA"].ToString() == pass &&
+                        fila["descripcion"].ToString().Equals("Vendedor", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al iniciar sesión: " + ex.Message);
+                return false;
+            }
         }
     }
 }

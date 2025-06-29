@@ -100,5 +100,18 @@ namespace DAL
                 return null;
             }
         }
+
+        public int ObtenerIdVendedor(string usuario, string contrasenia)
+        {
+            string query = "SELECT id_empleado FROM empleado WHERE usuario = @usuario AND contraseña = @contrasenia";
+            SqlParameter[] parametros = {
+        new SqlParameter("@usuario", usuario),
+        new SqlParameter("@contrasenia", contrasenia)
+    };
+
+            object resultado = conexion.EjecutarScalar(query, parametros);
+            return resultado != null ? Convert.ToInt32(resultado) : -1;
+        }
+
     }
 }

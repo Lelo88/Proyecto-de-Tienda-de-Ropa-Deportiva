@@ -1,13 +1,15 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using DAL;
 using Entidad;
-using DAL;
+using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace BLL
 {
     public class EncargadoBLL
     {
         private readonly EncargadoDAL encargadoDAL = new EncargadoDAL();
+        private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
 
         public List<Producto> ListarProductos()
         {
@@ -59,6 +61,31 @@ namespace BLL
 
             if (producto.Deporte == null || producto.Deporte.Id_Deporte <= 0)
                 throw new ArgumentException("Debe asignarse un deporte válido al producto.");
+        }
+
+        public bool IniciarSesion(string user, string pass)
+        {
+            try
+            {
+                DataTable dt = empleadoDAL.Iniciar_Sesion();
+
+                foreach (DataRow fila in dt.Rows)
+                {
+                    if (fila["USUARIO"].ToString() == user &&
+                        fila["CONTRASEÑA"].ToString() == pass &&
+                        fila["descripcion"].ToString().Equals("Encargado", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al iniciar sesión: " + ex.Message);
+                return false;
+            }
         }
     }
 }
