@@ -28,5 +28,10 @@ namespace BLL
             return ventaDAL.CrearVenta(venta);
         }
 
+        public int ObtenerProximoIdVenta()
+        {
+            return ventaDAL.ObtenerProximoIdVenta();
+        }
+
     }
 }

@@ -14,6 +14,7 @@ namespace Tienda_De_Ropa
         private readonly ProductoBLL productoBLL = new ProductoBLL(); // CORREGIDO
         private List<Producto> listaProductos = new List<Producto>();
         private readonly VendedorBLL vendedor = new VendedorBLL();
+        private readonly VentaBLL ventaBLL = new VentaBLL();
 
         public Vendedor(string user, string pass)
         {
@@ -21,7 +22,9 @@ namespace Tienda_De_Ropa
             label1.Text = "Vendedor: " + vendedor.ObtenerNombreCompletoPorUsuario(user);
         }
 
-        private void Vendedor_Load(object sender, EventArgs e) { }
+        private void Vendedor_Load(object sender, EventArgs e) {
+            txt_IdVenta.Text = ventaBLL.ObtenerProximoIdVenta().ToString();
+        }
 
         private void btn_GenerarVenta_Click(object sender, EventArgs e)
         {
@@ -32,7 +35,9 @@ namespace Tienda_De_Ropa
 
             btn_GenerarVenta.Enabled = false;
             btn_CerrarSesion.Enabled = false;
+
             txt_Fecha.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            
 
             cbo_MetodoDePago.DataSource = metodo.ObtenerNombresDeMetodos();
             nud_Cantidad.Value = 0;
@@ -43,6 +48,7 @@ namespace Tienda_De_Ropa
             ConfigurarDataGridViewColumnas();
             CargarDatosProductos();
         }
+
 
         private void CargarDatosProductos()
         {
