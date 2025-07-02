@@ -135,6 +135,21 @@ namespace DAL
                     }
                 };
             }
-        }
+
+                public int ObtenerProximoIdVenta()
+                {
+                    try
+                    {
+                        string query = "SELECT ISNULL(MAX(id_venta), 0) + 1 FROM venta";
+                        object result = conexion.EjecutarScalar(query);
+                        return Convert.ToInt32(result);
+                    }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine("Error al obtener el próximo ID de venta: " + ex.Message);
+                        return 1; 
+                    }
+                }
     }
+}
 

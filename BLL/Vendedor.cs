@@ -16,9 +16,12 @@ namespace BLL
             return vendedorDAL.ObtenerNombresDeProductos();
         }
 
-        public int ObtenerIdVendedor(string usuario, string contrasenia)
+        public string ObtenerNombreCompletoPorUsuario(string usuario)
         {
-            return vendedorDAL.ObtenerIdVendedor(usuario, contrasenia);
+            var vendedor = vendedorDAL.ObtenerVendedorPorUsuario(usuario);
+            if (vendedor != null)
+                return $"{vendedor.Nombre} {vendedor.Apellido}";
+            return "No encontrado";
         }
 
 

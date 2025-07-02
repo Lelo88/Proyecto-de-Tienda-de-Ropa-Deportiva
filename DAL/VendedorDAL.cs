@@ -101,17 +101,46 @@ namespace DAL
             }
         }
 
-        public int ObtenerIdVendedor(string usuario, string contrasenia)
+        public Vendedor ObtenerVendedorPorUsuario(string usuario)
         {
-            string query = "SELECT id_empleado FROM empleado WHERE usuario = @usuario AND contraseña = @contrasenia";
-            SqlParameter[] parametros = {
-        new SqlParameter("@usuario", usuario),
-        new SqlParameter("@contrasenia", contrasenia)
-    };
+            try
+            {
+                string query = @"
+            SELECT e.ID_EMPLEADO, e.NOMBRE, e.APELIDO, e.DNI, e.USUARIO, e.CONTRASEÑA, t.DESCRIPCION
+            FROM EMPLEADO e
+            JOIN TIPO_EMPLEADO t ON e.ID_TIPO_EMPLEADO = t.ID_TIPO_EMPLEADO
+            WHERE e.USUARIO = @usuario AND t.DESCRIPCION = 'Vendedor'";
 
-            object resultado = conexion.EjecutarScalar(query, parametros);
-            return resultado != null ? Convert.ToInt32(resultado) : -1;
+                SqlParameter[] parametros = {
+            new SqlParameter("@usuario", usuario)
+        };
+
+                DataTable dt = conexion.LeerPorComando(query, parametros);
+                if (dt.Rows.Count == 0)
+                    return null;
+
+                DataRow row = dt.Rows[0];
+                return new Vendedor
+                {
+                    Id_Empleado = Convert.ToInt32(row["ID_EMPLEADO"]),
+                    Nombre = row["NOMBRE"].ToString(),
+                    Apellido = row["APELIDO"].ToString(),
+                    Dni = row["DNI"].ToString(),
+                    Usuario = row["USUARIO"].ToString(),
+                    Contrasenia = row["CONTRASEÑA"].ToString(),
+                    TipoEmpleado = new TipoEmpleado
+                    {
+                        Descripcion = row["DESCRIPCION"].ToString()
+                    }
+                };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine("Error al obtener vendedor por usuario: " + ex.Message);
+                return null;
+            }
         }
+
 
     }
 }

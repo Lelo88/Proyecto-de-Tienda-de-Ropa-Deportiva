@@ -10,16 +10,23 @@ namespace BLL
     {
         private readonly ClienteDAL clienteDAL = new ClienteDAL();
 
-        public Cliente BuscarPorDni(string dni)
+        public Cliente BuscarClientePorDni(string dni)
         {
             if (string.IsNullOrWhiteSpace(dni))
-                throw new ArgumentException("El DNI no puede estar vacío.");
+            {
+                Console.WriteLine("El DNI no puede estar vacío.");
+                return null;
+            }
 
             if (!EsDniValido(dni))
-                throw new ArgumentException("El DNI debe contener solo números y tener entre 7 y 8 dígitos.");
+            {
+                Console.WriteLine("El DNI debe contener solo números y tener entre 7 y 8 dígitos.");
+                return null;
+            }
 
-            return clienteDAL.ObtenerPorDni(dni);
+            return clienteDAL.ObtenerClientePorDni(dni);
         }
+
 
         public bool CrearCliente(Cliente cliente)
         {
@@ -35,7 +42,7 @@ namespace BLL
                 throw new ArgumentException("El DNI debe contener solo números y tener entre 7 y 8 dígitos.");
 
             // Evitar duplicación de clientes por DNI
-            var existente = clienteDAL.ObtenerPorDni(cliente.Dni);
+            var existente = clienteDAL.ObtenerClientePorDni(cliente.Dni);
             if (existente != null)
                 throw new InvalidOperationException("Ya existe un cliente con ese DNI.");
 
