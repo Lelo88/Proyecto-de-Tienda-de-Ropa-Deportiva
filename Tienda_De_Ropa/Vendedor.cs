@@ -61,13 +61,14 @@ namespace Tienda_De_Ropa
 
         private void cbo_Producto_SelectedIndexChanged(object sender, EventArgs e)
         {
-            var nombreSeleccionado = cbo_Producto.SelectedItem?.ToString();
+            string nombreSeleccionado = cbo_Producto.SelectedItem?.ToString();
             if (string.IsNullOrEmpty(nombreSeleccionado)) return;
 
             var producto = listaProductos.FirstOrDefault(p => p.Nombre == nombreSeleccionado);
             if (producto != null)
             {
-                nud_Cantidad.Maximum = producto.Cantidad;
+                nud_Cantidad.Maximum = producto.Cantidad; // asigna cantidad máxima
+                nud_Cantidad.Value = producto.Cantidad > 0 ? 1 : 0;
                 txt_Precio.Text = ((decimal)producto.Precio * nud_Cantidad.Value).ToString("0.00");
             }
         }
@@ -82,8 +83,8 @@ namespace Tienda_De_Ropa
             {
                 if (nud_Cantidad.Value > producto.Cantidad)
                 {
+                    MessageBox.Show("La cantidad ingresada supera el stock disponible.", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     nud_Cantidad.Value = producto.Cantidad;
-                    MessageBox.Show("La cantidad supera el stock disponible.");
                 }
 
                 txt_Precio.Text = ((decimal)producto.Precio * nud_Cantidad.Value).ToString("0.00");
@@ -93,16 +94,45 @@ namespace Tienda_De_Ropa
         private void btn_AgregarProductoALista_Click(object sender, EventArgs e)
         {
             string nombreP = cbo_Producto.Text;
-            int cantidad = (int)nud_Cantidad.Value;
-            float precioUnitario = productoBLL.ObtenerPrecioUnitario(nombreP); // CORREGIDO
-            float subtotal = precioUnitario * cantidad;
+            int cantidadNueva = (int)nud_Cantidad.Value;
 
-            dgv_ProductosCargados.Rows.Add(nombreP, cantidad, precioUnitario, subtotal);
+            if (string.IsNullOrWhiteSpace(nombreP) || cantidadNueva == 0)
+            {
+                MessageBox.Show("Seleccione un producto y una cantidad válida.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Buscar stock disponible
+            var producto = listaProductos.FirstOrDefault(p => p.Nombre == nombreP);
+            if (producto == null) return;
+
+            // Verificar cuánto ya se agregó de ese producto
+            int cantidadYaAgregada = 0;
+            foreach (DataGridViewRow fila in dgv_ProductosCargados.Rows)
+            {
+                if (fila.Cells["ColProducto"].Value?.ToString() == nombreP)
+                {
+                    cantidadYaAgregada += Convert.ToInt32(fila.Cells["ColCantidad"].Value);
+                }
+            }
+
+            // Verificar si se supera el stock
+            if (cantidadYaAgregada + cantidadNueva > producto.Cantidad)
+            {
+                MessageBox.Show("Ya se agregó todo el stock disponible de este producto.", "Stock agotado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            float precioUnitario = producto.Precio;
+            float subtotal = precioUnitario * cantidadNueva;
+
+            dgv_ProductosCargados.Rows.Add(nombreP, cantidadNueva, precioUnitario.ToString("0.00"), subtotal.ToString("0.00"));
+
             txt_Total.Text = (float.Parse(txt_Total.Text) + subtotal).ToString("0.00");
-
             cbo_Producto.SelectedItem = null;
             nud_Cantidad.Value = 0;
         }
+
 
         private void btn_CancelarVenta_Click(object sender, EventArgs e)
         {
@@ -206,9 +236,6 @@ namespace Tienda_De_Ropa
                 MessageBox.Show("Error al buscar cliente: " + ex.Message);
             }
         }
-
-
-
 
     }
 }
