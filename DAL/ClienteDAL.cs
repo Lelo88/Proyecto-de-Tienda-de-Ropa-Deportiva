@@ -10,14 +10,14 @@ namespace DAL
     {
         private readonly Conexion conexion = new Conexion();
 
-        public Cliente ObtenerPorDni(string dni)
+        public Cliente ObtenerClientePorDni(string dni)
         {
             try
             {
                 string query = "SELECT * FROM cliente WHERE dni = @dni";
                 SqlParameter[] parametros = {
-                    new SqlParameter("@dni", dni)
-                };
+            new SqlParameter("@dni", dni)
+        };
 
                 DataTable dt = conexion.LeerPorComando(query, parametros);
 
@@ -38,6 +38,7 @@ namespace DAL
                 return null;
             }
         }
+
 
         public bool Crear(Cliente cliente)
         {

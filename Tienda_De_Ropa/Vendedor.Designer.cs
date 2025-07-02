@@ -1,4 +1,7 @@
-﻿using System;
+﻿using Entidad;
+using System;
+using System.Linq;
+using System.Windows.Forms;
 
 namespace Tienda_De_Ropa
 {
@@ -191,6 +194,8 @@ namespace Tienda_De_Ropa
             this.txt_DniCliente.Size = new System.Drawing.Size(146, 52);
             this.txt_DniCliente.TabIndex = 12;
             this.txt_DniCliente.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.txt_DniCliente.Leave += new System.EventHandler(this.txt_DniCliente_Leave);
+
             // 
             // label6
             // 
@@ -600,28 +605,82 @@ namespace Tienda_De_Ropa
 
         private void txt_Precio_TextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // sin implementación
         }
 
         private void txt_Fecha_TextChanged(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // sin implementación
         }
 
         private void btn_ListarProductos_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // sin implementación
         }
 
         private void btn_EliminarProductoDeLista_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            // sin implementación
         }
 
         private void btn_ConfirmarVenta_Click(object sender, EventArgs e)
         {
-            throw new NotImplementedException();
+            string dni = txt_DniCliente.Text.Trim();
+            string nombre = txt_NombreCliente.Text.Trim();
+            string apellido = txt_ApellidoCliente.Text.Trim();
+
+            if (string.IsNullOrWhiteSpace(dni) || !dni.All(char.IsDigit) || dni.Length < 7 || dni.Length > 8)
+            {
+                MessageBox.Show("Por favor, ingrese un DNI válido de 7 u 8 dígitos numéricos.", "DNI incorrecto", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (string.IsNullOrWhiteSpace(nombre) || string.IsNullOrWhiteSpace(apellido))
+            {
+                MessageBox.Show("Por favor complete todos los datos del cliente.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            Cliente cliente = clienteBLL.BuscarClientePorDni(dni);
+
+            if (cliente == null)
+            {
+                // No existe → lo creamos
+                cliente = new Cliente
+                {
+                    Dni = dni,
+                    Nombre = nombre,
+                    Apellido = apellido
+                };
+
+                bool creado = clienteBLL.CrearCliente(cliente);
+                if (!creado)
+                {
+                    MessageBox.Show("No se pudo registrar el cliente.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Lo buscamos nuevamente para obtener el ID generado
+                cliente = clienteBLL.BuscarClientePorDni(dni);
+                if (cliente == null)
+                {
+                    MessageBox.Show("Error al recuperar el cliente recién creado.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                MessageBox.Show("Cliente registrado correctamente.", "Éxito", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            else
+            {
+                MessageBox.Show("Cliente existente encontrado.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+            // Mostrar el ID en el campo correspondiente
+            txt_ClienteNro.Text = cliente.Id_Cliente.ToString();
+
+            // Acá podrías habilitar el resto del flujo de la venta si querés continuar (productos, etc.)
         }
+
 
         #endregion
 

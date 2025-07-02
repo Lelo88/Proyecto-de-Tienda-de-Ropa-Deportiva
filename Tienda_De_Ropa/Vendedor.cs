@@ -15,6 +15,7 @@ namespace Tienda_De_Ropa
         private List<Producto> listaProductos = new List<Producto>();
         private readonly VendedorBLL vendedor = new VendedorBLL();
         private readonly VentaBLL ventaBLL = new VentaBLL();
+        private readonly ClienteBLL clienteBLL = new ClienteBLL();
 
         public Vendedor(string user, string pass)
         {
@@ -125,7 +126,7 @@ namespace Tienda_De_Ropa
 
         private void LimpiarFormulario()
         {
-            txt_IdVenta.Clear();
+            txt_IdVenta.Text = ventaBLL.ObtenerProximoIdVenta().ToString(); // volver a generar número de venta
             txt_ApellidoCliente.Clear();
             txt_NombreCliente.Clear();
             txt_ClienteNro.Clear();
@@ -147,6 +148,7 @@ namespace Tienda_De_Ropa
             btn_GenerarVenta.Enabled = true;
         }
 
+
         private void ConfigurarDataGridViewColumnas()
         {
             dgv_ProductosCargados.AutoGenerateColumns = false;
@@ -156,5 +158,57 @@ namespace Tienda_De_Ropa
             dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPrecioUnitario", HeaderText = "Precio Unitario" });
             dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColTotal", HeaderText = "Total" });
         }
+
+        private void txt_DniCliente_Leave(object sender, EventArgs e)
+        {
+            string dni = txt_DniCliente.Text.Trim();
+            if (string.IsNullOrWhiteSpace(dni))
+                return;
+
+            try
+            {
+                var cliente = clienteBLL.BuscarClientePorDni(dni);
+
+                if (cliente != null)
+                {
+                    // Cliente encontrado → mostrar sus datos y bloquear campos
+                    txt_NombreCliente.Text = cliente.Nombre;
+                    txt_ApellidoCliente.Text = cliente.Apellido;
+                    txt_ClienteNro.Text = cliente.Id_Cliente.ToString();
+                    txt_NombreCliente.Enabled = false;
+                    txt_ApellidoCliente.Enabled = false;
+                }
+                else
+                {
+                    // Cliente no encontrado → permitir ingresar datos
+                    var r = MessageBox.Show("Cliente no encontrado. ¿Desea registrarlo?", "Nuevo cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (r == DialogResult.Yes)
+                    {
+                        txt_NombreCliente.Clear();
+                        txt_ApellidoCliente.Clear();
+                        txt_ClienteNro.Text = "Nuevo";
+                        txt_NombreCliente.Enabled = true;
+                        txt_ApellidoCliente.Enabled = true;
+                        txt_NombreCliente.Focus();
+                    }
+                    else
+                    {
+                        txt_DniCliente.Clear();
+                        txt_NombreCliente.Clear();
+                        txt_ApellidoCliente.Clear();
+                        txt_ClienteNro.Clear();
+                        txt_DniCliente.Focus();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar cliente: " + ex.Message);
+            }
+        }
+
+
+
+
     }
 }
