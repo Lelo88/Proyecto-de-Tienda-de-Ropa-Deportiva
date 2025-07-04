@@ -12,6 +12,7 @@ namespace Tienda_De_Ropa
 {
     public partial class Gerente: Form
     {
+        private readonly GerenteBLL gerenteBLL = new GerenteBLL();
         public Gerente()
         {
             InitializeComponent();
@@ -42,23 +43,74 @@ namespace Tienda_De_Ropa
 
         private void btn_ListarVentas_Click(object sender, EventArgs e)
         {
-            //ARMAR CON CONSULTA SQL LISTANDO LAS VENTAS REALIZADAS POR LOS EMPLEADOS
+            try
+            {
+                dgv_Ventas.DataSource = gerenteBLL.ListarVentas();
 
-            btn_Aplicar.Enabled = true;
-            btn_Buscar.Enabled = true;
-            txt_DetalleBusqueda.Enabled = true;
-            cbo_OrdenarPor.Enabled = true;
-            dgv_Ventas.Enabled = true;
+                // Activar controles
+                btn_Aplicar.Enabled = true;
+                btn_Buscar.Enabled = true;
+                txt_DetalleBusqueda.Enabled = true;
+                cbo_OrdenarPor.Enabled = true;
+                dgv_Ventas.Enabled = true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al listar ventas: " + ex.Message);
+            }
         }
 
         private void btn_Aplicar_Click(object sender, EventArgs e)
         {
-            //ORDENA LOS ELEMENTOS DE ACUERDO SI ELIGIO MAYOR, MENOR VENDIDO (PENSAR EN LA IDEA...)
+            {
+                if (cbo_OrdenarPor.SelectedItem != null)
+                {
+                    string criterio = cbo_OrdenarPor.SelectedItem.ToString();
+                    try
+                    {
+                        dgv_Ventas.DataSource = gerenteBLL.OrdenarVentasPor(criterio);
+                    }
+                    catch (Exception ex)
+                    {
+                        MessageBox.Show("Error al ordenar: " + ex.Message);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Seleccioná un criterio para ordenar.");
+                }
+            }
         }
 
         private void btn_Buscar_Click(object sender, EventArgs e)
         {
-            //BUSCA DE ACUERDO A LO QUE EL USUARIO ESCRIBA EN EL TXT
+            if (int.TryParse(txt_DetalleBusqueda.Text, out int idVenta))
+            {
+                try
+                {
+                    Venta venta = gerenteBLL.BuscarVenta(idVenta);
+                    if (venta != null)
+                        dgv_Ventas.DataSource = new List<Venta> { venta };
+                    else
+                        MessageBox.Show("No se encontró la venta con ese ID.");
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Error al buscar la venta: " + ex.Message);
+                }
+            }
+            else
+            {
+                MessageBox.Show("Ingrese un ID válido (solo números).");
+            }
         }
+        private void Gerente_Load(object sender, EventArgs e)
+        {
+            cbo_OrdenarPor.Items.Add("FECHA");
+            cbo_OrdenarPor.Items.Add("TOTAL");
+            cbo_OrdenarPor.Items.Add("NOMBRE_CLIENTE");
+            cbo_OrdenarPor.Items.Add("NOMBRE_EMPLEADO");
+        }
+
     }
 }
