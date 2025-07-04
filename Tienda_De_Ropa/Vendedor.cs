@@ -1,297 +1,241 @@
 ﻿using BLL;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
 using System.Linq;
-using System.Reflection.Emit;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using Entidad;
 
 namespace Tienda_De_Ropa
 {
-    
-    public partial class Vendedor: Form
+    public partial class Vendedor : Form
     {
-        BLL.Metodo_de_pago metodo = new BLL.Metodo_de_pago();
-        BLL.Vendedor vendedor = new BLL.Vendedor();
-        List <string> productos = new List<string>();
-        List <int> cantidadProducto = new List<int>();
-        List <float> precios = new List<float>();
-        
+        private readonly MetodoDePagoBLL metodo = new MetodoDePagoBLL();
+        private readonly ProductoBLL productoBLL = new ProductoBLL(); // CORREGIDO
+        private List<Producto> listaProductos = new List<Producto>();
+        private readonly VendedorBLL vendedor = new VendedorBLL();
+        private readonly VentaBLL ventaBLL = new VentaBLL();
+        private readonly ClienteBLL clienteBLL = new ClienteBLL();
 
         public Vendedor(string user, string pass)
         {
             InitializeComponent();
-            //OBTIENE EL ID_EMPLEADO DE UN VENDEDOR
-            txt_IdVendedor.Text=vendedor.ObtenerIdVendedor(user,pass).ToString();
-            //OBTIENE EL ID_EMPLEADO DE UN VENDEDOR
-
-        }
-        private void Vendedor_Load(object sender, EventArgs e)
-        {
-
+            label1.Text = "Vendedor: " + vendedor.ObtenerNombreCompletoPorUsuario(user);
         }
 
-        private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)
-        {
-
+        private void Vendedor_Load(object sender, EventArgs e) {
+            txt_IdVenta.Text = ventaBLL.ObtenerProximoIdVenta().ToString();
         }
+
         private void btn_GenerarVenta_Click(object sender, EventArgs e)
         {
-            //cargarDatos();// CARGA LOS NOMBRES, CANTIDADES Y PRECIOS DE LOS PRODUCTOS EN LISTAS
-            mostrarDatosDeProductos();//MUESTRA POR CONSOLA
-            mostrarDatosDeCantidadesDeProductos();//MUESTRA POR CONSOLA
-            mostrarDatosDePreciosUnitariosDeProductos();//MUESTRA POR CONSOLA
-            ConfigurarDataGridViewColumnasPorCodigo();//LIMPIA LA TABLA DEL DGV
-            txt_ApellidoCliente.Enabled = true;
-            txt_NombreCliente.Enabled = true;
-            txt_DniCliente.Enabled = true;
-            cbo_MetodoDePago.Enabled = true;
-            cbo_Producto.Enabled = true;
-            nud_Cantidad.Enabled = false;
-            txt_Precio.Enabled = false;
-            txt_Total.Enabled = false;
-            btn_AgregarProductoALista.Enabled = true;
-            btn_ConfirmarVenta.Enabled = true;
-            btn_CancelarVenta.Enabled = true;
-            btn_EliminarProductoDeLista.Enabled = true;
+            txt_ApellidoCliente.Enabled = txt_NombreCliente.Enabled = txt_DniCliente.Enabled = true;
+            cbo_MetodoDePago.Enabled = cbo_Producto.Enabled = true;
+            nud_Cantidad.Enabled = btn_AgregarProductoALista.Enabled = btn_ConfirmarVenta.Enabled =
+                btn_CancelarVenta.Enabled = btn_EliminarProductoDeLista.Enabled = true;
+
             btn_GenerarVenta.Enabled = false;
             btn_CerrarSesion.Enabled = false;
-            txt_Fecha.Text = DateTime.Now.ToString("dd MM yyyy");
-            cbo_MetodoDePago.DataSource = metodo.ObtenerMetodoDePago();//OBTIENE METODOS DE PAGO
+
+            txt_Fecha.Text = DateTime.Now.ToString("dd/MM/yyyy");
+            
+
+            cbo_MetodoDePago.DataSource = metodo.ObtenerNombresDeMetodos();
             nud_Cantidad.Value = 0;
-            txt_Precio.Text = "";
-            dgv_ProductosCargados.Enabled = true;
+            txt_Precio.Clear();
             dgv_ProductosCargados.DataSource = null;
             txt_Total.Text = "0";
+
+            ConfigurarDataGridViewColumnas();
+            CargarDatosProductos();
         }
-        private void btn_AgregarProductoALista_Click(object sender, EventArgs e)
+
+
+        private void CargarDatosProductos()
         {
-            string nombreP = cbo_Producto.Text;
-            int cantidadP= (int)nud_Cantidad.Value;
-            ModificarDatos();
-            float precioP = Convert.ToSingle(txt_Precio.Text);
-            dgv_ProductosCargados.Rows.Add(nombreP, cantidadP, vendedor.ObtenerPrecioUnitario(nombreP), precioP);
-            txt_Total.Text = (Convert.ToInt32(txt_Total.Text) + Convert.ToInt32(txt_Precio.Text)).ToString();
+            listaProductos = productoBLL.ListarProductos(); // CORREGIDO
             cbo_Producto.Items.Clear();
-            cbo_Producto.SelectedItem = null;
-            nud_Cantidad.Value = 0;
-
-        }
-        private void btn_CancelarVenta_Click(object sender, EventArgs e)
-        {
-            DialogResult r = MessageBox.Show("Si le da que si, se cancelara toda la venta para el cliente ¿ESTA SEGURO?", "Salir", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.DefaultDesktopOnly, false);
-            if (r == DialogResult.Yes)
-            {
-                //dgv_ProductosCargados.DataSource = null;
-                //cbo_Producto.DataSource = null;
-                MessageBox.Show("SE HA CANCELADO LA VENTA");
-                //LIMPIA LOS DATOS DE LOS TXT Y LOS CBO
-                txt_IdVendedor.Clear();
-                txt_IdVenta.Clear();
-                txt_ApellidoCliente.Clear();
-                txt_NombreCliente.Clear();
-                txt_ClienteNro.Clear();
-                txt_DniCliente.Clear();
-                txt_Fecha.Clear();
-                txt_Total.Clear();
-                nud_Cantidad.Value = 0;
-                txt_Precio.Clear();
-
-                //ARMAR CONSULTA SQL PARA LIMPIAR LA TABLA DE VENTAS DEL CLIENTE
-                //LIMPIA LOS DATOS DE LOS TXT Y LOS CBO
-
-                //DESHABILITA EL USO DE LA INTERAZ
-                txt_IdVendedor.Enabled = false;
-                txt_IdVenta.Enabled = false;
-                txt_ApellidoCliente.Enabled = false;
-                txt_NombreCliente.Enabled = false;
-                txt_ClienteNro.Enabled = false;
-                txt_DniCliente.Enabled = false;
-                txt_Fecha.Enabled = false;
-                cbo_MetodoDePago.Enabled = false;
-                txt_Total.Enabled = false;
-                cbo_Producto.Enabled = false;
-                nud_Cantidad.Enabled = false;
-                txt_Precio.Enabled = false;
-                btn_AgregarProductoALista.Enabled = false;
-                btn_ConfirmarVenta.Enabled = false;
-                btn_CancelarVenta.Enabled = false;
-                btn_EliminarProductoDeLista.Enabled = false;
-                btn_CerrarSesion.Enabled = true;
-                btn_GenerarVenta.Enabled = true;
-                dgv_ProductosCargados.Enabled = false;
-                dgv_ProductosCargados.DataSource = null;
-                txt_Total.Text = "0";
-                //ARMAR CONSULTA SQL PARA LIMPIAR LA TABLA DE VENTAS DEL CLIENTE
-                //DESHABILITA EL USO DE LA INTERAZ
-            }
-            else
-            {
-                MessageBox.Show("El sistema seguira en funcionamiento");
-            }
-        }
-        private void btn_CerrarSesion_Click(object sender, EventArgs e)
-        {
-            DialogResult r = MessageBox.Show("¿Seguro que desea cerrar sesion?", "Salir", MessageBoxButtons.YesNo, MessageBoxIcon.Question, MessageBoxDefaultButton.Button2, MessageBoxOptions.DefaultDesktopOnly, false);
-            if (r == DialogResult.Yes)
-            {
-                MessageBox.Show("Cerrando sesion...");
-                this.Hide();
-                Iniciar_Sesion iniciar_sesion = new Iniciar_Sesion();
-                iniciar_sesion.Show();
-                this.Close();
-            }
-            else
-            {
-                MessageBox.Show("El sistema seguira en funcionamiento");
-            }
-        }
-
-
-        private void label10_Click(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void txt_Fecha_TextChanged(object sender, EventArgs e)
-        {
-            
-        }
-
-        private void btn_ConfirmarVenta_Click(object sender, EventArgs e)
-        {
-            //EN SQL CARGAR TODAS LAS VENTAS DE UN CLIENTE
-        }
-        private void btn_EliminarProductoDeLista_Click(object sender, EventArgs e)
-        {
-            //HACER CCONSULTA SQL PARA ELIMINAR PRODUCTO CARGADO EN LA LISTA
-        }
-
-        private void ConfigurarDataGridViewColumnasPorCodigo()
-        {
-            dgv_ProductosCargados.AutoGenerateColumns = false; // Desactivar auto-generación
-            dgv_ProductosCargados.Columns.Clear(); // Limpiar columnas existentes
-            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColProducto", HeaderText = "Producto", DataPropertyName = "Producto" });
-            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCantidad", HeaderText = "Cantidad", DataPropertyName = "Cantidad" });
-            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPrecioUnitario", HeaderText = "Precio Unitario", DataPropertyName = "PrecioUnitario" });
-            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColTotal", HeaderText = "Total", DataPropertyName = "Total" });
+            foreach (var prod in listaProductos)
+                cbo_Producto.Items.Add(prod.Nombre);
         }
 
         private void cbo_Producto_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string producto= cbo_Producto.Text;
-            int cantidad = 0;
-            foreach (string fila in productos)
+            string nombreSeleccionado = cbo_Producto.SelectedItem?.ToString();
+            if (string.IsNullOrEmpty(nombreSeleccionado)) return;
+
+            var producto = listaProductos.FirstOrDefault(p => p.Nombre == nombreSeleccionado);
+            if (producto != null)
             {
-                if (fila.Equals(cbo_Producto.SelectedItem.ToString()))//SI EL PRODUCTO SE LLAMA IGUAL ENTONCES...
+                nud_Cantidad.Maximum = producto.Cantidad; // asigna cantidad máxima
+                nud_Cantidad.Value = producto.Cantidad > 0 ? 1 : 0;
+                txt_Precio.Text = ((decimal)producto.Precio * nud_Cantidad.Value).ToString("0.00");
+            }
+        }
+
+        private void nud_Cantidad_ValueChanged(object sender, EventArgs e)
+        {
+            if (cbo_Producto.SelectedItem == null) return;
+
+            string nombre = cbo_Producto.Text;
+            var producto = listaProductos.FirstOrDefault(p => p.Nombre == nombre);
+            if (producto != null)
+            {
+                if (nud_Cantidad.Value > producto.Cantidad)
                 {
-                    for (int i = 0; i < productos.Count; i++) {
-                        cantidad = cantidadProducto[i];
-                        nud_Cantidad.Value = cantidad;
-                        nud_Cantidad.Enabled = true;
-                    }
+                    MessageBox.Show("La cantidad ingresada supera el stock disponible.", "Stock insuficiente", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    nud_Cantidad.Value = producto.Cantidad;
+                }
+
+                txt_Precio.Text = ((decimal)producto.Precio * nud_Cantidad.Value).ToString("0.00");
+            }
+        }
+
+        private void btn_AgregarProductoALista_Click(object sender, EventArgs e)
+        {
+            string nombreP = cbo_Producto.Text;
+            int cantidadNueva = (int)nud_Cantidad.Value;
+
+            if (string.IsNullOrWhiteSpace(nombreP) || cantidadNueva == 0)
+            {
+                MessageBox.Show("Seleccione un producto y una cantidad válida.", "Advertencia", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            // Buscar stock disponible
+            var producto = listaProductos.FirstOrDefault(p => p.Nombre == nombreP);
+            if (producto == null) return;
+
+            // Verificar cuánto ya se agregó de ese producto
+            int cantidadYaAgregada = 0;
+            foreach (DataGridViewRow fila in dgv_ProductosCargados.Rows)
+            {
+                if (fila.Cells["ColProducto"].Value?.ToString() == nombreP)
+                {
+                    cantidadYaAgregada += Convert.ToInt32(fila.Cells["ColCantidad"].Value);
+                }
+            }
+
+            // Verificar si se supera el stock
+            if (cantidadYaAgregada + cantidadNueva > producto.Cantidad)
+            {
+                MessageBox.Show("Ya se agregó todo el stock disponible de este producto.", "Stock agotado", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            float precioUnitario = producto.Precio;
+            float subtotal = precioUnitario * cantidadNueva;
+
+            dgv_ProductosCargados.Rows.Add(nombreP, cantidadNueva, precioUnitario.ToString("0.00"), subtotal.ToString("0.00"));
+
+            txt_Total.Text = (float.Parse(txt_Total.Text) + subtotal).ToString("0.00");
+            cbo_Producto.SelectedItem = null;
+            nud_Cantidad.Value = 0;
+        }
+
+
+        private void btn_CancelarVenta_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("¿Seguro que desea cancelar la venta?", "Confirmación",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                LimpiarFormulario();
+            }
+        }
+
+        private void btn_CerrarSesion_Click(object sender, EventArgs e)
+        {
+            if (MessageBox.Show("¿Desea cerrar sesión?", "Salir",
+                MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            {
+                Hide();
+                new Iniciar_Sesion().Show();
+                Close();
+            }
+        }
+
+        private void LimpiarFormulario()
+        {
+            txt_IdVenta.Text = ventaBLL.ObtenerProximoIdVenta().ToString(); // volver a generar número de venta
+            txt_ApellidoCliente.Clear();
+            txt_NombreCliente.Clear();
+            txt_ClienteNro.Clear();
+            txt_DniCliente.Clear();
+            txt_Fecha.Clear();
+            txt_Total.Clear();
+            txt_Precio.Clear();
+            nud_Cantidad.Value = 0;
+
+            dgv_ProductosCargados.Rows.Clear();
+            cbo_Producto.SelectedIndex = -1;
+
+            txt_ApellidoCliente.Enabled = txt_NombreCliente.Enabled =
+            txt_DniCliente.Enabled = cbo_MetodoDePago.Enabled = cbo_Producto.Enabled =
+            nud_Cantidad.Enabled = btn_AgregarProductoALista.Enabled = btn_ConfirmarVenta.Enabled =
+            btn_CancelarVenta.Enabled = btn_EliminarProductoDeLista.Enabled = false;
+
+            btn_CerrarSesion.Enabled = true;
+            btn_GenerarVenta.Enabled = true;
+        }
+
+
+        private void ConfigurarDataGridViewColumnas()
+        {
+            dgv_ProductosCargados.AutoGenerateColumns = false;
+            dgv_ProductosCargados.Columns.Clear();
+            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColProducto", HeaderText = "Producto" });
+            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColCantidad", HeaderText = "Cantidad" });
+            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColPrecioUnitario", HeaderText = "Precio Unitario" });
+            dgv_ProductosCargados.Columns.Add(new DataGridViewTextBoxColumn { Name = "ColTotal", HeaderText = "Total" });
+        }
+
+        private void txt_DniCliente_Leave(object sender, EventArgs e)
+        {
+            string dni = txt_DniCliente.Text.Trim();
+            if (string.IsNullOrWhiteSpace(dni))
+                return;
+
+            try
+            {
+                var cliente = clienteBLL.BuscarClientePorDni(dni);
+
+                if (cliente != null)
+                {
+                    // Cliente encontrado → mostrar sus datos y bloquear campos
+                    txt_NombreCliente.Text = cliente.Nombre;
+                    txt_ApellidoCliente.Text = cliente.Apellido;
+                    txt_ClienteNro.Text = cliente.Id_Cliente.ToString();
+                    txt_NombreCliente.Enabled = false;
+                    txt_ApellidoCliente.Enabled = false;
                 }
                 else
                 {
-                    MessageBox.Show("El producto seleccionado no tiene cantidad disponible");
-                }
-            }
-
-        }
-        private void nud_Cantidad_ValueChanged(object sender, EventArgs e)
-        {
-            string producto = cbo_Producto.Text;
-            decimal precio= vendedor.ObtenerPrecioUnitario(producto) * nud_Cantidad.Value;
-            int cantMax= Convert.ToInt32(vendedor.ObtenerCantidad(producto));
-            if (nud_Cantidad.Value>cantMax) {
-                MessageBox.Show("OJO QUE LA CANTIDAD QUE ELIGIO SUPERA LA EXISTENCIA DEL PRODUCTO");
-                nud_Cantidad.Value = cantMax; 
-                precio = vendedor.ObtenerPrecioUnitario(producto) * nud_Cantidad.Value;
-            }
-            else { 
-                
-            }
-            txt_Precio.Text = precio.ToString();
-        }
-        private void txt_Precio_TextChanged(object sender, EventArgs e)
-        {
-            //EL PRECIO SERA MODIFICADO DE ACUERDO A LA CANTIDAD QUE ELIGA EL USUARIO
-        }
-        private void cargarDatos()
-        {//  CARGA LOS NOMBRES, CANTIDADES Y PRECIOS DE LOS PRODUCTOS EN LISTAS DESDE EL SQL
-            int alternador = 1;
-            if (alternador == 1)
-            {
-                productos.AddRange(vendedor.ObtenerProducto());
-                cantidadProducto.AddRange(vendedor.ObtenerCantidadDeTodosLosProductos());
-                precios.AddRange(vendedor.ObtenerTodosLosPreciosUnitarios());
-                foreach (string fila in productos)
-                {
-                    cbo_Producto.Items.Add(fila);
-                }
-                alternador--;
-            }
-            else {
-                cbo_Producto.Items.Clear();
-                cbo_Producto.SelectedItem = null;
-                nud_Cantidad.Value = 0;
-                alternador++;
-            }
-            
-        }//  CARGA LOS NOMBRES, CANTIDADES Y PRECIOS DE LOS PRODUCTOS EN LISTAS DESDE EL SQL
-        private void ModificarDatos()
-        {//MODIFICA LAS LISTAS DE PRODUCTOS, CANTIDADES Y PRECIOS
-            string producto = cbo_Producto.Text;
-            int cantidadPorUsuario = (int)nud_Cantidad.Value;
-            for (int i = 0; i < cantidadProducto.Count; i++)
-            {
-                if (cbo_Producto.SelectedItem.Equals(productos[i]))
-                {
-                    cantidadProducto[i] = cantidadProducto[i]-cantidadPorUsuario;
-                    if (cantidadProducto[i] == 0)
+                    // Cliente no encontrado → permitir ingresar datos
+                    var r = MessageBox.Show("Cliente no encontrado. ¿Desea registrarlo?", "Nuevo cliente", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (r == DialogResult.Yes)
                     {
-                        MessageBox.Show("SE ELIMINARA EL PRODUCTO == " + productos[i]);
-                        productos[i].Remove(i);
-                        cantidadProducto.RemoveAt(i);
-                        precios.RemoveAt(i);
-                        
+                        txt_NombreCliente.Clear();
+                        txt_ApellidoCliente.Clear();
+                        txt_ClienteNro.Text = "Nuevo";
+                        txt_NombreCliente.Enabled = true;
+                        txt_ApellidoCliente.Enabled = true;
+                        txt_NombreCliente.Focus();
                     }
-                    else {
-                         
-                        Console.WriteLine("AUN HAY DISPONIBILIDAD DEL PRODUCTO " + cantidadProducto[i]);
+                    else
+                    {
+                        txt_DniCliente.Clear();
+                        txt_NombreCliente.Clear();
+                        txt_ApellidoCliente.Clear();
+                        txt_ClienteNro.Clear();
+                        txt_DniCliente.Focus();
                     }
-                    
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error al buscar cliente: " + ex.Message);
+            }
         }
-        // Muestra los datos de los productos, cantidades y precios por consola
-        private void mostrarDatosDeProductos() {
-            for (int i=0;i<productos.Count;i++)
-            Console.WriteLine("ACA SE IMPRIME EL NOMBRE QUE CONTIENE PRODUCTOS I  " + productos[i]);
-        }
-        private void mostrarDatosDeCantidadesDeProductos()
-        {
-            for (int i = 0; i < cantidadProducto.Count; i++)
-                Console.WriteLine("ACA SE IMPRIME LA CANTIDAD DE CADA PRODUCTO  " + cantidadProducto[i]);
-        }
-        private void mostrarDatosDePreciosUnitariosDeProductos()
-        {
-            for (int i = 0; i < precios.Count; i++)
-                Console.WriteLine("ACA SE IMPRIME LA CANTIDAD DE CADA PRODUCTO  " + precios[i]);
-        }
-
-        private void btn_ListarProductos_Click(object sender, EventArgs e)
-        {
-            cbo_Producto.Items.Clear();
-            cbo_Producto.SelectedItem = null;
-            nud_Cantidad.Value = 0;
-            cargarDatos();
-        }
-        // Muestra los datos de los productos, cantidades y precios por consola
 
     }
 }

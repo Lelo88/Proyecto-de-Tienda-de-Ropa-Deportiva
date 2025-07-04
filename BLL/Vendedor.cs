@@ -1,104 +1,86 @@
 ﻿using DAL;
+using Entidad;
 using System;
 using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
-    public class Vendedor : Empleado
+    public class VendedorBLL
     {
-        public Vendedor()
-        {
+        private readonly VendedorDAL vendedorDAL = new VendedorDAL();
+        private readonly EmpleadoDAL empleadoDAL = new EmpleadoDAL();
 
-        }
-        public Vendedor(int id_empleado, string nombre, string apellido, string dni, Tipo_empleado tipoEmpleado, string usuario, string contrasena)
+        public List<string> ObtenerNombresDeProductos()
         {
-            this.Id_Empleado = id_empleado;
-            this.Nombre = nombre;
-            this.Apellido = apellido;
-            this.Dni = dni;
-            this.Tipo_Empleado = tipoEmpleado;
-            this.Usuario = usuario;
-            this.Contrasenia = contrasena;
+            return vendedorDAL.ObtenerNombresDeProductos();
         }
-        public override bool Iniciar_Sesion(string user, string pass)
-        {
-            DAL.EmpleadoDAL empleadoDAL = new DAL.EmpleadoDAL();
-            DataTable dt = empleadoDAL.Iniciar_Sesion();
 
-            foreach (DataRow fila in dt.Rows)
+        public string ObtenerNombreCompletoPorUsuario(string usuario)
+        {
+            var vendedor = vendedorDAL.ObtenerVendedorPorUsuario(usuario);
+            if (vendedor != null)
+                return $"{vendedor.Nombre} {vendedor.Apellido}";
+            return "No encontrado";
+        }
+
+
+        public Entidad.Producto BuscarProducto(string nombre)
+        {
+            if (string.IsNullOrWhiteSpace(nombre))
+                throw new ArgumentException("El nombre del producto no puede estar vacío.");
+
+            return vendedorDAL.ObtenerProductoCompleto(nombre);
+        }
+
+        public bool VerificarStock(string nombre, int cantidadDeseada)
+        {
+            if (cantidadDeseada <= 0)
+                throw new ArgumentException("La cantidad debe ser mayor que cero.");
+
+            int stockDisponible = vendedorDAL.ObtenerStockPorProducto(nombre);
+            return stockDisponible >= cantidadDeseada;
+        }
+
+        public float ObtenerPrecioUnitario(string nombre)
+        {
+            return vendedorDAL.ObtenerPrecioPorProducto(nombre);
+        }
+
+        public float CalcularSubtotal(string nombre, int cantidad)
+        {
+            float precio = ObtenerPrecioUnitario(nombre);
+            return precio * cantidad;
+        }
+
+        public void RealizarVenta(Venta venta)
+        {
+            // Lógica futura
+        }
+
+        public bool IniciarSesion(string user, string pass)
+        {
+            try
             {
-                if (fila["USUARIO"].Equals(user) && fila["CONTRASEÑA"].Equals(pass) && fila["DESCRIPCION"].Equals("Vendedor"))
+                DataTable dt = empleadoDAL.Iniciar_Sesion();
+
+                foreach (DataRow fila in dt.Rows)
                 {
-                    return true;
+                    if (fila["USUARIO"].ToString() == user &&
+                        fila["CONTRASEÑA"].ToString() == pass &&
+                        fila["descripcion"].ToString().Equals("Vendedor", StringComparison.OrdinalIgnoreCase))
+                    {
+                        return true;
+                    }
                 }
 
+                return false;
             }
-            return false;
-        }
-        public void RealizarVenta()
-        {
-
-        }
-        public void EliminarDeLaLista()
-        {
-
-        }
-        public List<string> ObtenerProducto()
-        {
-            DAL.VendedorDAL vendedorDAL = new DAL.VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerProducto();
-            List<string> productos = new List<string>();
-            foreach (DataRow fila in dt.Rows)
+            catch (Exception ex)
             {
-                productos.Add(fila["Nombre"].ToString());
+                Console.WriteLine("Error al iniciar sesión: " + ex.Message);
+                return false;
             }
-            return productos;
-        }
-        public List<int> ObtenerCantidadDeTodosLosProductos() {
-            DAL.VendedorDAL vendedorDAL = new DAL.VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerCantidadDeTodosLosProductos();
-            List<int> cantidad = new List<int>();
-            foreach (DataRow fila in dt.Rows)
-            {
-                cantidad.Add(Convert.ToInt32(fila["Cantidad"]));
-            }
-            return cantidad;
-        }
-
-        public int ObtenerPrecioUnitario(string producto)
-        {
-            DAL.VendedorDAL vendedorDAL = new DAL.VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerPrecioUnitario(producto);
-            return Convert.ToInt32(dt.Rows[0]["precio"]);
-        }
-
-        public int ObtenerCantidad(string producto)
-        {
-            DAL.VendedorDAL vendedorDAL = new DAL.VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerCantidad(producto);
-            return Convert.ToInt32(dt.Rows[0]["cantidad"]);
-
-        }
-        public int ObtenerIdVendedor(string user, string pass) { 
-            VendedorDAL vendedorDAL = new VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerIdVendedor(user,pass);
-            return Convert.ToInt32(dt.Rows[0]["id_empleado"]);
-        }
-
-        public List<float> ObtenerTodosLosPreciosUnitarios()
-        {
-            DAL.VendedorDAL vendedorDAL = new DAL.VendedorDAL();
-            DataTable dt = vendedorDAL.ObtenerTodosLosPreciosUnitarios();
-            List<float> preciosUnitarios = new List<float>();
-            foreach (DataRow fila in dt.Rows)
-            {
-                preciosUnitarios.Add(Convert.ToInt32(fila["Precio"]));
-            }
-            return preciosUnitarios;
         }
     }
 }

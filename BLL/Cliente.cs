@@ -1,54 +1,62 @@
-﻿using System;
+﻿using DAL;
+using Entidad;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace BLL
 {
-    public class Cliente
+    public class ClienteBLL
     {
-		private int id_Cliente;
+        private readonly ClienteDAL clienteDAL = new ClienteDAL();
 
-		public int Id_Cliente
-		{
-			get { return id_Cliente; }
-			set { id_Cliente = value; }
-		}
-
-		private string nombre;
-
-		public string Nombre
-		{
-			get { return nombre; }
-			set { nombre = value; }
-		}
-
-		private string apellido;
-
-		public string Apellido
-		{
-			get { return apellido; }
-			set { apellido = value; }
-		}
-
-		private string dni;
-
-		public string Dni
-		{
-			get { return dni; }
-			set { dni = value; }
-		}
-
-		public Cliente() { 
-		
-		}
-        public Cliente(int id_cliente, string nombre, string apellido, string dni)
+        public Cliente BuscarClientePorDni(string dni)
         {
-            this.Id_Cliente = id_cliente;
-            this.Nombre = nombre;
-            this.Apellido = apellido;
-            this.Dni = dni;
+            if (string.IsNullOrWhiteSpace(dni))
+            {
+                Console.WriteLine("El DNI no puede estar vacío.");
+                return null;
+            }
+
+            if (!EsDniValido(dni))
+            {
+                Console.WriteLine("El DNI debe contener solo números y tener entre 7 y 8 dígitos.");
+                return null;
+            }
+
+            return clienteDAL.ObtenerClientePorDni(dni);
+        }
+
+
+        public bool CrearCliente(Cliente cliente)
+        {
+            if (cliente == null)
+                throw new ArgumentNullException("cliente", "El cliente no puede ser nulo.");
+
+            if (string.IsNullOrWhiteSpace(cliente.Nombre) ||
+                string.IsNullOrWhiteSpace(cliente.Apellido) ||
+                string.IsNullOrWhiteSpace(cliente.Dni))
+                throw new ArgumentException("Todos los campos del cliente son obligatorios.");
+
+            if (!EsDniValido(cliente.Dni))
+                throw new ArgumentException("El DNI debe contener solo números y tener entre 7 y 8 dígitos.");
+
+            // Evitar duplicación de clientes por DNI
+            var existente = clienteDAL.ObtenerClientePorDni(cliente.Dni);
+            if (existente != null)
+                throw new InvalidOperationException("Ya existe un cliente con ese DNI.");
+
+            return clienteDAL.Crear(cliente);
+        }
+
+        public List<Cliente> ObtenerTodos()
+        {
+            return clienteDAL.Listar();
+        }
+
+        private bool EsDniValido(string dni)
+        {
+            return dni.All(char.IsDigit) && (dni.Length >= 7 && dni.Length <= 8);
         }
     }
 }

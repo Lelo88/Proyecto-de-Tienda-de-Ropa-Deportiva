@@ -46,11 +46,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Encargado de deposito.cs">
+    <Compile Include="Encargadodedeposito.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Encargado de deposito.Designer.cs">
-      <DependentUpon>Encargado de deposito.cs</DependentUpon>
+    <Compile Include="Encargadodedeposito.Designer.cs">
+      <DependentUpon>Encargadodedeposito.cs</DependentUpon>
     </Compile>
     <Compile Include="Administrador.cs">
       <SubType>Form</SubType>
@@ -81,8 +81,8 @@
     <EmbeddedResource Include="Administrador.resx">
       <DependentUpon>Administrador.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Encargado de deposito.resx">
-      <DependentUpon>Encargado de deposito.cs</DependentUpon>
+    <EmbeddedResource Include="Encargadodedeposito.resx">
+      <DependentUpon>Encargadodedeposito.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Gerente.resx">
       <DependentUpon>Gerente.cs</DependentUpon>
@@ -119,6 +119,10 @@
     <ProjectReference Include="..\BLL\BLL.csproj">
       <Project>{1b78270f-6ff2-47c2-9a08-f4b72a1d22f1}</Project>
       <Name>BLL</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Entidad\Entidad.csproj">
+      <Project>{72979162-732b-4673-936d-fcf2a102c8ec}</Project>
+      <Name>Entidad</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

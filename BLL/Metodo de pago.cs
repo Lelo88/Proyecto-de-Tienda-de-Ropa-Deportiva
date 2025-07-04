@@ -1,48 +1,30 @@
-﻿using DAL;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using DAL;
+using Entidad;
 
 namespace BLL
 {
-    public class Metodo_de_pago
+    public class MetodoDePagoBLL
     {
-		private int id_mdp;
+        private readonly MetodoDePagoDAL metodoDAL = new MetodoDePagoDAL();
 
-		public int Id_Mdp
-		{
-			get { return id_mdp; }
-			set { id_mdp = value; }
-		}
-		private string nombre;
-
-		public string Nombre
-		{
-			get { return nombre; }
-			set { nombre = value; }
-		}
-		public Metodo_de_pago() { 
-		
-		}
-        public Metodo_de_pago(int id_mdp, string nombre)
+        public List<MetodoDePago> ObtenerMetodos()
         {
-            this.id_mdp = id_mdp;
-            this.nombre = nombre;
+            return metodoDAL.ObtenerTodos();
         }
 
-        public List<string> ObtenerMetodoDePago()
+        public List<string> ObtenerNombresDeMetodos()
         {
-            MetodoDePagoDAL metodoDAL = new MetodoDePagoDAL();
-            DataTable dt = metodoDAL.ObtenerMetodoDePago();
-            List<string> metodos = new List<string>();
-            foreach (DataRow fila in dt.Rows)
+            var metodos = metodoDAL.ObtenerTodos();
+            List<string> nombres = new List<string>();
+
+            foreach (var metodo in metodos)
             {
-                metodos.Add(fila["Nombre"].ToString());
+                nombres.Add(metodo.Nombre);
             }
-            return metodos;
+
+            return nombres;
         }
     }
 }
